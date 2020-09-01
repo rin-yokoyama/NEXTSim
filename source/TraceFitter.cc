@@ -1,0 +1,104 @@
+/** \file TraceFitter.cpp
+ * \brief Uses a chi^2 minimization to fit waveforms
+ *
+ * Obtains the phase of a waveform using a Chi^2 fitting algorithm
+ * implemented through the GSL libraries. We have now set up two different
+ * functions for this processor. One of them handles the fast SiPMT signals,
+ * which tend to be more Gaussian in shape than the standard PMT signals.
+ *
+ * \author S. V. Paulauskas
+ * \date 22 July 2011
+ */
+#include <algorithm>
+#include <iostream>
+#include <vector>
+#include <ctime>
+
+#include "Globals.hpp"
+#include "FitDriver.hpp"
+#include "TraceFitter.hpp"
+#include "GslFitter.hpp"
+
+using namespace std;
+
+TraceFitter::TraceFitter(const std::string &s)
+{
+    name = "TraceFitter";
+    if (s == "GSL" || s == "gsl")
+    {
+        fitterType_ = FitDriver::GSL;
+    }
+    else
+    {
+        fitterType_ = FitDriver::UNKNOWN;
+    }
+}
+
+void TraceFitter::Analyze(Trace &trace, const std::string &detType,
+                          const std::string &detSubtype,
+                          const std::map<std::string, int> &tagMap)
+{
+    TraceAnalyzer::Analyze(trace, detType, detSubtype, tagMap);
+
+    if (trace.HasValue("saturation") || trace.empty() ||
+        trace.GetWaveform().size() == 0)
+    {
+        EndAnalyze();
+        return;
+    }
+
+    Globals *globals = Globals::get();
+
+    const double sigmaBaseline = trace.GetValue("sigmaBaseline");
+    const double maxVal = trace.GetValue("maxval");
+    const double qdc = trace.GetValue("qdc");
+    const double maxPos = trace.GetValue("maxpos");
+    const vector<double> waveform = trace.GetWaveform();
+    //bool isDblBeta = detType == "beta" && detSubtype == "double";
+    //bool isDblBetaT = isDblBeta && tagMap.find("timing") != tagMap.end();
+
+    // trace.plot(D_SIGMA, sigmaBaseline * 100);
+
+    if (!isDblBetaT)
+    {
+        if (sigmaBaseline > globals->sigmaBaselineThresh())
+        {
+            EndAnalyze();
+            return;
+        }
+    }
+    else
+    {
+        if (sigmaBaseline > globals->siPmtSigmaBaselineThresh())
+        {
+            EndAnalyze();
+            return;
+        }
+    }
+
+    pair<double, double> pars = globals->fitPars(detType + ":" + detSubtype);
+    if (isDblBetaT)
+        pars = globals->fitPars(detType + ":" + detSubtype + ":timing");
+
+    FitDriver *driver;
+    switch (fitterType_)
+    {
+    case FitDriver::GSL:
+        driver = new GslFitter(isDblBetaT);
+        break;
+    case FitDriver::UNKNOWN:
+    default:
+        EndAnalyze();
+        return;
+    }
+
+    driver->PerformFit(waveform, pars, sigmaBaseline, qdc);
+    trace.InsertValue("phase", driver->GetPhase() + maxPos);
+
+    //trace.plot(DD_AMP, driver->GetAmplitude(), maxVal);
+    //trace.plot(D_PHASE, driver->GetPhase() * 1000 + 100);
+    //trace.plot(D_CHISQPERDOF, driver->GetChiSqPerDof());
+
+    delete (driver);
+    EndAnalyze();
+}

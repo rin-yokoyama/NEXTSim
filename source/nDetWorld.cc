@@ -14,6 +14,15 @@
 #include "G4VisAttributes.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4SubtractionSolid.hh"
+#include "RIKENFloor.hh"
+
+#include "G4Transform3D.hh"
+#include "globals.hh"
+#include "G4PVPlacement.hh"
+#include "G4Box.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4VisAttributes.hh"
+#include "nDetMaterials.hh"
 
 //CERN
 #include "Tape.hh"
@@ -125,27 +134,37 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 	//if(expName=="RIKEN") BuildCERNStructures();
 
 	if (expName == "RIKEN")
+
 		BuildRIKENStructures();
 
 	// Place the experimental hall into the world
 	physV = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logV, "expHallPhysV", 0, false, 0);
 
 	//Placing BRIKEN Detector
-/*
+
 	G4VSolid *BRIKEN_BLOCK = new G4Box("BRIKEN_BLOCK", 450 * mm, 450 * mm, 375 * mm);
 	G4VSolid *BRIKEN_HOLE = new G4Box("BRIKEN_HOLE", 70 * mm, 70 * mm, 375 * mm);
 	G4VSolid *BRIKEN = new G4SubtractionSolid("BRIKEN_BLOCK-BRIKEN_HOLE", BRIKEN_BLOCK, BRIKEN_HOLE, 0, G4ThreeVector(0, 0, 0));
 	G4LogicalVolume *BRIKEN_Log = new G4LogicalVolume(BRIKEN, materials->getMaterial("HDPE"), "BRIKEN", 0, 0, 0);
 	G4VPhysicalVolume *BRIKEN_phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 1.25 * m), BRIKEN_Log, "BRIKEN_phys", logV, false, 0);
-*/
+
 	// Placing HDPE floor in the experiemt.
+
+	//G4VSolid *HDPE_Floor = new G4Box("HDPE_Floor", 2. * m, 2.54 * cm, 2. * m);
 	/*
 	G4VSolid *HDPE_Floor = new G4Box("HDPE_Floor", 2. * m, 2.54 * cm, 2. * m);
+
 	G4LogicalVolume *Floor_Log = new G4LogicalVolume(HDPE_Floor, materials->getMaterial("HDPE"), "Floor_Log", 0, 0, 0);
-	G4VPhysicalVolume *Floor_phys = new G4PVPlacement(0, G4ThreeVector(0, -210 * cm, 0), Floor_Log, "Floor_phys", logV, false, 0);
+
+	G4RotationMatrix *HDPE_Floor_Rot = new G4RotationMatrix(90 * deg, 0, 0);
+	//G4VPhysicalVolume *Floor_phys = new G4PVPlacement(0, G4ThreeVector(0, -205 * cm, 0), Floor_Log, "Floor_phys", logV, false, 0);
+	G4VPhysicalVolume *Floor_phys = new G4PVPlacement(HDPE_Floor_Rot, G4ThreeVector(-130. * cm, 0, 0), Floor_Log, "Floor_phys", logV, false, 0);
+	G4VisAttributes *HDPEfloorVisAtt = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0, 1.0));
+	HDPEfloorVisAtt->SetForceSolid(true);
+	Floor_Log->SetVisAttributes(HDPEfloorVisAtt);
 */
 	//Placing PSPMT
-	/*
+
 	G4RotationMatrix *PSPMTRot = new G4RotationMatrix();
 	PSPMTRot->rotateZ(45 * deg);
 	G4VSolid *PSPMT_Outer = new G4Box("PSPMT_Outer", 25 * mm, 25 * mm, 20 * mm);
@@ -153,7 +172,17 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 	G4VSolid *PSPMT = new G4SubtractionSolid("PSPMT_Outer-PSPMT_Inner", PSPMT_Outer, PSPMT_Inner, 0, G4ThreeVector(0, 0, 0));
 	G4LogicalVolume *PSPMT_Log = new G4LogicalVolume(PSPMT, materials->getMaterial("G4_Al"), "PSPMT", 0, 0, 0);
 	G4VPhysicalVolume *PSPMT_phys = new G4PVPlacement(PSPMTRot, G4ThreeVector(0, 0, -78. * mm), PSPMT_Log, "PSPMT_phys", logV, false, 0);
-*/
+
+	//Placing RIKEN frame here for IDS test
+	/**************************/
+	/*	std::string file_riken = "/ARCHIVE/Ddata/geant4_stl/vandle/riken2018/RIKEN_VANDLE_FULL_Simplified_Part_new.stl";
+	CADMesh *rebMesh_riken = new CADMesh((char *)file_riken.c_str());
+	rebMesh_riken->SetScale(cm);
+	G4VSolid *ribSolid_riken = rebMesh_riken->TessellatedMesh();
+	G4LogicalVolume *ribLogic_riken_log = new G4LogicalVolume(ribSolid_riken, materials->getMaterial("Al"), "ribSolid_riken", 0, 0, 0);*/
+	//	G4PhysicalVolume *ribSolid_riken_phys = new G4PVPlacement(G4ThreeVector(0, 0, 0), G4ThreeVector(0, 0, 0), ribLogic_riken_log, "ribSolid_riken_phys", logV, false);
+
+	/**************************/
 	if (expName == "RIKEN")
 		BuildRIKENElements();
 
@@ -180,18 +209,33 @@ void nDetWorld::BuildCERNStructures(){
 */
 void nDetWorld::BuildRIKENStructures()
 {
-
+	/* RIKEN Frame*/
 	RIKENFloor *rikenFloor = new RIKENFloor();
 	G4RotationMatrix *floorRot = new G4RotationMatrix();
 	floorRot->rotateZ(90 * deg);
 	G4double floorXPos = -126.5 * cm;
-	G4ThreeVector floorPosition = G4ThreeVector(0, -210 * cm, 0);
+	G4ThreeVector floorPosition = G4ThreeVector(0, -210 * cm, 0); // RIKEN Setup
 	rikenFloor->Place(floorRot, floorPosition, "rikenFloor", logV);
 
 	RIKENSupport *rikenSupport = new RIKENSupport();
 	G4RotationMatrix *rotSupport = new G4RotationMatrix();
 	G4ThreeVector supportPos(0.0, 4 * cm, 7 * cm);
 	rikenSupport->Place(rotSupport, supportPos, "rikenSupport", logV);
+/*
+
+	// Using classes for RIKEN to build RIKEN elements.
+	RIKENFloor *rikenFloor = new RIKENFloor();
+	G4RotationMatrix *floorRot = new G4RotationMatrix();
+	//floorRot->rotateZ(90 * deg);
+	G4double floorXPos = -126.5 * cm;
+	G4ThreeVector floorPosition = G4ThreeVector(-142.54 * cm, 0, 0); // Concrete Floor
+	rikenFloor->Place(floorRot, floorPosition, "rikenFloor", logV);
+
+	RIKENSupport *rikenSupport = new RIKENSupport();
+	G4RotationMatrix *rotSupport = new G4RotationMatrix(90 * deg, 270 * deg, 180 * deg);
+	G4ThreeVector supportPos(0.0, 4 * cm, 7 * cm);
+	rikenSupport->Place(rotSupport, supportPos, "rikenSupport", logV);
+	*/
 
 	return;
 }

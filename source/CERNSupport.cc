@@ -18,37 +18,35 @@
 CERNSupport::CERNSupport()
 {
     materialsManager = MaterialsManager::GetInstance();
-    
-    argSupportVisAtt = new G4VisAttributes( G4Colour(248./255.,248./255.,255./255.)); 
-	argSupportVisAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
-	argSupportVisAtt->SetForceSolid(true);
-	argoneFrame = new ArgoneFrame();
-	SetBasicSizes();
-} 
+
+    argSupportVisAtt = new G4VisAttributes(G4Colour(248. / 255., 248. / 255., 255. / 255.));
+    argSupportVisAtt->SetForceAuxEdgeVisible(true); // Can see outline when drawn with lines
+    argSupportVisAtt->SetForceSolid(true);
+    argoneFrame = new ArgoneFrame();
+    SetBasicSizes();
+}
 
 CERNSupport::~CERNSupport()
 {
-
 }
 
 void CERNSupport::SetBasicSizes()
 {
     ribX = argoneFrame->GetRibsX();
     ribY = argoneFrame->GetRibsY();
-    ribZ = argoneFrame->GetRibsZ();	
+    ribZ = argoneFrame->GetRibsZ();
 }
 
-
-void CERNSupport::Place(G4RotationMatrix *pRot, 
-                        G4ThreeVector &tlate, 
-                        const G4String &pName, 
-                        G4LogicalVolume *pMotherLogical,  
+void CERNSupport::Place(G4RotationMatrix *pRot,
+                        G4ThreeVector &tlate,
+                        const G4String &pName,
+                        G4LogicalVolume *pMotherLogical,
                         G4int pCopyNo)
 {
 
     frameMaterial = materialsManager->GetAluminum();
-    
-/*	G4VSolid* ribsSolid =  argoneFrame->GetRibsSolid();
+
+    /*	G4VSolid* ribsSolid =  argoneFrame->GetRibsSolid();
     //G4VSolid* ribsTotSolid = AddHolders(ribsSolid); 
 
     G4LogicalVolume* ribLogical = new G4LogicalVolume(ribsSolid, 
@@ -89,43 +87,42 @@ void CERNSupport::Place(G4RotationMatrix *pRot,
 	                   0, 
 	                   0 ); 
                        */
-   //G4ThreeVector offset = G4ThreeVector(0, 0, 0);
+    //G4ThreeVector offset = G4ThreeVector(0, 0, 0);
+    /*
    std::string file1 = "/ARCHIVE/Ddata/geant4_stl/vandle/riken2018/RIKEN_VANDLE_FULL_Simplified_Part_new.stl";
    CADMesh * rebMesh = new CADMesh((char*)file1.c_str());
    rebMesh->SetScale(cm);
+*/
 
-  // CADMesh* rebMesh = new CADMesh("/ARCHIVE/Ddata/geant4_stl/vandle/isolde/VerticalFrame.stl", cm, offset, false);
-   G4VSolid* ribSolid =  rebMesh->TessellatedMesh();
-   G4LogicalVolume* ribLogic = new G4LogicalVolume(ribSolid, frameMaterial, "CERNRrameRib");
-   ribLogic->SetVisAttributes(argSupportVisAtt);
-   
-   G4RotationMatrix ribRot(*pRot);
-   ribRot.rotateX(-90.0*deg);
-   ribRot.rotateY(180.0*deg);
-   G4ThreeVector ribPos(0 ,-5.0*cm, -7.0*cm);
-   ribPos = tlate + ribPos;
-   G4Transform3D transfRib(ribRot,ribPos);     
-   new G4PVPlacement(transfRib,ribLogic,"frameRibs", pMotherLogical, 0, 0);
-	
-	
-  // PlaceSkeleton(pRot, tlate, pName, pMotherLogical, pCopyNo);
-//112.9284
+    std::string file1 = "/ARCHIVE/Ddata/geant4_stl/IDS/clarion_hemisphere.stl";
+    CADMesh *rebMesh = new CADMesh((char *)file1.c_str());
+    rebMesh->SetScale(cm);
 
+    // CADMesh* rebMesh = new CADMesh("/ARCHIVE/Ddata/geant4_stl/vandle/isolde/VerticalFrame.stl", cm, offset, false);
+    G4VSolid *ribSolid = rebMesh->TessellatedMesh();
+    G4LogicalVolume *ribLogic = new G4LogicalVolume(ribSolid, frameMaterial, "CERNRrameRib");
+    ribLogic->SetVisAttributes(argSupportVisAtt);
+
+    G4RotationMatrix ribRot(*pRot);
+    ribRot.rotateX(-90.0 * deg);
+    ribRot.rotateY(180.0 * deg);
+    G4ThreeVector ribPos(0, -5.0 * cm, -7.0 * cm);
+    ribPos = tlate + ribPos;
+    G4Transform3D transfRib(ribRot, ribPos);
+    new G4PVPlacement(transfRib, ribLogic, "frameRibs", pMotherLogical, 0, 0);
+
+    // PlaceSkeleton(pRot, tlate, pName, pMotherLogical, pCopyNo);
+    //112.9284
 }
 
-
-G4VSolid* CERNSupport::AddHolders(G4VSolid*ribsSolid)
+G4VSolid *CERNSupport::AddHolders(G4VSolid *ribsSolid)
 {
-
-	
 }
 
-void CERNSupport::PlaceSkeleton(G4RotationMatrix *pRot, 
-                                G4ThreeVector &tlate, 
-                                const G4String &pName, 
-                                G4LogicalVolume *pMotherLogical,  
+void CERNSupport::PlaceSkeleton(G4RotationMatrix *pRot,
+                                G4ThreeVector &tlate,
+                                const G4String &pName,
+                                G4LogicalVolume *pMotherLogical,
                                 G4int pCopyNo)
 {
-						
-							
 }

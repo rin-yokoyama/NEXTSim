@@ -86,6 +86,13 @@ endif()
 
 #Inform the user about the Geant4 install version
 message(STATUS "Found Geant4 install: v${Geant4_VERSION}")
+find_package(GSL REQUIRED) 
+
+#PAASS libraries added
+
+set(PAASS_DIR_PATH $ENV{PAASSSYS} CACHE STRING "path to paass directory" )
+include_directories(${PAASS_DIR_PATH}/include)
+link_directories(${PAASS_DIR_PATH}/lib)
 
 set(TOP_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 

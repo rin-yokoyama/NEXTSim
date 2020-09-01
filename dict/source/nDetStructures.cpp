@@ -39,9 +39,10 @@ nDetEventStructure::nDetEventStructure()
 	nInitEnergy = 0;
 	nAbsorbed = 0;
 	goodEvent = 0;
+	thresholdQDC = 0;
 }
 
-void nDetEventStructure::SetValues(const int &eventID_, const short &threadID_, const short &runNb_, const short &nScatters_, const double &nDepEnergy_, const double &nInitEnergy_, const bool &nAbsorbed_, const bool &goodEvent_)
+void nDetEventStructure::SetValues(const int &eventID_, const short &threadID_, const short &runNb_, const short &nScatters_, const double &nDepEnergy_, const double &nInitEnergy_, const bool &nAbsorbed_, const bool &goodEvent_, const bool &thresholdQDC_)
 {
 	eventID = eventID_;
 	threadID = threadID_;
@@ -51,6 +52,7 @@ void nDetEventStructure::SetValues(const int &eventID_, const short &threadID_, 
 	nInitEnergy = nInitEnergy_;
 	nAbsorbed = nAbsorbed_;
 	goodEvent = goodEvent_;
+	thresholdQDC = thresholdQDC_;
 }
 
 void nDetEventStructure::Append()
@@ -67,6 +69,7 @@ void nDetEventStructure::Zero()
 	nInitEnergy = 0;
 	nAbsorbed = 0;
 	goodEvent = 0;
+	thresholdQDC = 0;
 }
 
 ///////////////////////////////////////////////////////////
@@ -175,6 +178,10 @@ void nDetMultiOutputStructure::Append(const nDetOutputStructure &output, const s
 	reconComY.push_back(output.reconComY);
 	photonComCol.push_back(output.photonComCol);
 	photonComRow.push_back(output.photonComRow);
+	//detScatterX.push_back(output.detScatterX);
+	//detScatterY.push_back(output.detScatterY);
+	//detScatterZ.push_back(output.detScatterZ);
+	//detScatterE.push_back(output.detScatterE);
 	detID.push_back(detID_);
 	multiplicity++;
 }
@@ -195,6 +202,7 @@ void nDetMultiOutputStructure::Append(const nDetDebugStructure &debug, const sho
 		photonsProd.push_back(debug.photonsProd.at(iv));
 		recoilMass.push_back(debug.recoilMass.at(iv));
 		nScatterScint.push_back(debug.nScatterScint.at(iv));
+		nCopyNum.push_back(debug.nCopyNum.at(iv));
 	}
 }
 
@@ -223,6 +231,7 @@ void nDetMultiOutputStructure::Zero()
 	nPathLength.clear();
 	nScatterTime.clear();
 	impartedE.clear();
+	nCopyNum.clear();
 	//segmentCol.clear();
 	//segmentRow.clear();
 	photonsProd.clear();
@@ -257,7 +266,7 @@ void nDetDebugStructure::SetValues(const double &nEnterPosX_, const double &nEnt
 	nTimeInMat = nTimeInMat_;
 }
 
-void nDetDebugStructure::Append(const double &nScatterX_, const double &nScatterY_, const double &nScatterZ_, const double &nScatterAngle_, const double &nPathLength_, const double &nScatterTime_, const double &impartedE_, const short &segmentCol_, const short &segmentRow_, const short &photonsProd_, const short &recoilMass_, const bool &nScatterScint_)
+void nDetDebugStructure::Append(const double &nScatterX_, const double &nScatterY_, const double &nScatterZ_, const double &nScatterAngle_, const double &nPathLength_, const double &nScatterTime_, const double &impartedE_, const short &segmentCol_, const short &segmentRow_, const short &photonsProd_, const double &recoilMass_, const bool &nScatterScint_, const int &nCopyNum_)
 {
 	nScatterX.push_back(nScatterX_);
 	nScatterY.push_back(nScatterY_);
@@ -271,6 +280,7 @@ void nDetDebugStructure::Append(const double &nScatterX_, const double &nScatter
 	photonsProd.push_back(photonsProd_);
 	recoilMass.push_back(recoilMass_);
 	nScatterScint.push_back(nScatterScint_);
+	nCopyNum.push_back(nCopyNum_);
 	mult++;
 }
 
@@ -302,6 +312,7 @@ void nDetDebugStructure::Zero()
 	photonsProd.clear();
 	recoilMass.clear();
 	nScatterScint.clear();
+	nCopyNum.clear();
 	for (size_t i = 0; i < 2; i++)
 	{
 		pulsePhase[i] = 0;

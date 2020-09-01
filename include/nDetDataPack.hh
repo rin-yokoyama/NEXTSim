@@ -13,35 +13,37 @@ class TBranch;
   * @date May 9, 2019
   */
 
-class nDetDataPack{
-  public:
+class nDetDataPack
+{
+public:
 	/** Default constructor
 	  */
-	nDetDataPack() : evtData(NULL), outData(NULL), multData(NULL), debugData(NULL), traceData(NULL) { }
+	nDetDataPack() : evtData(NULL), outData(NULL), multData(NULL), debugData(NULL), traceData(NULL) {}
 
 	/** Data structure constructor
 	  */
-	nDetDataPack(nDetEventStructure *evt, nDetOutputStructure *out, nDetMultiOutputStructure *mult, nDetDebugStructure *debug, nDetTraceStructure *trace) : 
-	  evtData(evt), outData(out), multData(mult), debugData(debug), traceData(trace) { }
+	nDetDataPack(nDetEventStructure *evt, nDetOutputStructure *out, nDetMultiOutputStructure *mult, nDetDebugStructure *debug, nDetTraceStructure *trace) : evtData(evt), outData(out), multData(mult), debugData(debug), traceData(trace) {}
 
 	void setDataAddresses(nDetEventStructure *evt, nDetOutputStructure *out, nDetMultiOutputStructure *mult, nDetDebugStructure *debug, nDetTraceStructure *trace);
 
-	void copyData(nDetEventStructure *evt, nDetOutputStructure *out, nDetMultiOutputStructure *mult, nDetDebugStructure *debug, nDetTraceStructure *trace) const ;
+	void copyData(nDetEventStructure *evt, nDetOutputStructure *out, nDetMultiOutputStructure *mult, nDetDebugStructure *debug, nDetTraceStructure *trace) const;
 
 	/** Return true if the current event is a good detection event, meaning that optical photons
 	  * were detected at the photo-sensitive surfaces of the detector, and return false otherwise
 	  */
-	bool goodEvent() const ;
+	bool goodEvent() const;
+
+	bool thresholdQDC() const;
 
 	/** Get the ID of the current event
 	  */
-	int getEventID() const ;
+	int getEventID() const;
 
 	/** Clear all variables and vectors
 	  */
 	void clear();
-	
-  private:
+
+private:
 	nDetEventStructure *evtData;
 	nDetOutputStructure *outData;
 	nDetMultiOutputStructure *multData;

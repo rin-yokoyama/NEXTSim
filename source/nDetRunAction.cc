@@ -24,12 +24,37 @@ double dotProduct(const G4ThreeVector &v1, const G4ThreeVector &v2)
 	return (v1.getX() * v2.getX() + v1.getY() * v2.getY() + v1.getZ() * v2.getZ());
 }
 
+double calcRecMass(G4double E1, double p1, G4double E2, double p2, G4double Edel, double pdel)
+{
+	double v1 = pow(2 * E1 / p1, 2);
+	double v2 = pow(2 * E2 / p2, 2);
+	double vdel = pow(2 * Edel / pdel, 2);
+	G4double mx = (v1 - v2) / vdel;
+	return mx;
+}
+
 primaryTrackInfo::primaryTrackInfo(const G4Step *step)
 {
 	this->setValues(step->GetTrack());
 	if (step->GetPreStepPoint()->GetPhysicalVolume()->GetName().find("Scint") != std::string::npos) // Scatter event occured inside a scintillator.
+	{
 		inScint = true;
-	dkE = -1 * (step->GetPostStepPoint()->GetKineticEnergy() - step->GetPreStepPoint()->GetKineticEnergy());
+		copyNum = step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
+		//copyNum = step->GetPreStepPoint()->GetTouchable()->GetCopyNumber();
+		std::cout << "checking"
+				  << " " << copyNum << std::endl;
+	}
+
+	else
+	{
+		copyNum = -100;
+	}
+	//dkE = -1 * (step->GetPostStepPoint()->GetKineticEnergy() - step->GetPreStepPoint()->GetKineticEnergy());
+
+	dkE = -1 * step->GetDeltaEnergy();
+	atomicMass = calcRecMass(step->GetPreStepPoint()->GetKineticEnergy(), step->GetPreStepPoint()->GetMomentum().mag(),
+							 step->GetPostStepPoint()->GetKineticEnergy(), step->GetPostStepPoint()->GetMomentum().mag(),
+							 dkE, step->GetDeltaMomentum().mag());
 }
 
 primaryTrackInfo::primaryTrackInfo(const G4Track *track)
@@ -79,6 +104,7 @@ void primaryTrackInfo::setValues(const G4Track *track)
 
 	copyNum = track->GetTouchable()->GetCopyNumber();
 	trackID = track->GetTrackID();
+	//atomicMass = part->GetAtomicMass();
 	atomicMass = part->GetAtomicMass();
 	inScint = false;
 }
@@ -122,6 +148,13 @@ void nDetRunAction::BeginOfRunAction(const G4Run *aRun)
 {
 	numPhotonsTotal = 0;
 	numPhotonsDetTotal = 0;
+
+	auto NumOfDetectors = userDetectors.size();
+
+	detScatterX.resize(NumOfDetectors);
+	detScatterY.resize(NumOfDetectors);
+	detScatterZ.resize(NumOfDetectors);
+	detScatterE.resize(NumOfDetectors);
 
 	// Get RunId and threadID
 	evtData.runNb = aRun->GetRunID();
@@ -229,7 +262,7 @@ bool nDetRunAction::getSegmentFromCopyNum(const G4int &copyNum, G4int &col, G4in
 	return false;
 }
 
-bool nDetRunAction::processDetector(nDetDetector *det)
+bool nDetRunAction::processDetector(nDetDetector *det, int detNum)
 {
 	if (!det || det->empty()) // No detected photons, do not process
 		return false;
@@ -251,12 +284,21 @@ bool nDetRunAction::processDetector(nDetDetector *det)
 	if (cmL->getNumDetected() > 0 && cmR->getNumDetected() > 0)
 		evtData.goodEvent = true;
 
+	
+
 	// Compute the photon detection efficiency
 	outData.nPhotonsTot = stacking->GetNumPhotonsProduced();
 	if (outData.nPhotonsTot > 0)
 		outData.photonDetEff = outData.nPhotonsDet / (double)outData.nPhotonsTot;
 	else
 		outData.photonDetEff = -1;
+
+	// Detector scattering output
+
+	outData.detScatterX = detScatterX.at(detNum);
+	outData.detScatterY = detScatterY.at(detNum);
+	outData.detScatterZ = detScatterZ.at(detNum);
+	outData.detScatterE = detScatterE.at(detNum);
 
 	// Get the photon center-of-mass positions
 	G4ThreeVector centerL = cmL->getCenter();
@@ -315,6 +357,9 @@ bool nDetRunAction::processDetector(nDetDetector *det)
 	debugData.pulseMax[1] = pmtR->getMaximum();
 	debugData.pulseMaxTime[1] = pmtR->getMaximumTime();
 	debugData.pulseArrival[1] = pmtR->getWeightedPhotonArrivalTime();
+
+
+
 
 	// Print the digitized traces.
 	if (pmtL->getPrintTrace() || pmtR->getPrintTrace())
@@ -416,7 +461,7 @@ bool nDetRunAction::processDetector(nDetDetector *det)
 
 bool nDetRunAction::processStartDetector(nDetDetector *det, double &startTime)
 {
-	if (!processDetector(det)) // No detected photons, do not process
+	if (!processDetector(det, 0)) // No detected photons, do not process
 		return false;
 
 	// Return the time-of-flight from the start detector
@@ -443,7 +488,7 @@ void nDetRunAction::process()
 	{ // Un-triggered mode (default)
 		for (std::vector<nDetDetector>::iterator iter = userDetectors.begin(); iter != userDetectors.end(); iter++)
 		{
-			if (!processDetector(&(*iter)))
+			if (!processDetector(&(*iter), detID))
 			{ // Skip the start detector because we already processed it
 				detID++;
 				continue;
@@ -462,7 +507,7 @@ void nDetRunAction::process()
 			for (std::vector<nDetDetector>::iterator iter = userDetectors.begin(); iter != userDetectors.end(); iter++)
 			{
 				// Skip the start detector because we already processed it
-				if (&(*iter) != startDetector && !processDetector(&(*iter)))
+				if (&(*iter) != startDetector && !processDetector(&(*iter), detID))
 				{ // Skip events with no detected photons
 					detID++;
 					continue;
@@ -606,13 +651,47 @@ bool nDetRunAction::scatterEvent()
 		G4ThreeVector vertex = priTrack->pos;
 		getSegmentFromCopyNum(priTrack->copyNum, segCol, segRow);
 		debugData.Append(vertex.getX(), vertex.getY(), vertex.getZ(), priTrack->angle, priTrack->plength, (priTrack->gtime - debugData.nEnterTime),
-						 priTrack->dkE, segCol, segRow, 0, priTrack->atomicMass, priTrack->inScint);
+						 priTrack->dkE, segCol, segRow, 0, priTrack->atomicMass, priTrack->inScint, priTrack->copyNum);
 
 		// Update the neutron scatter center-of-mass
 		debugData.nComX += priTrack->dkE * vertex.getX();
 		debugData.nComY += priTrack->dkE * vertex.getY();
 		debugData.nComZ += priTrack->dkE * vertex.getZ();
 		debugData.neutronWeight += priTrack->dkE;
+
+		if (priTrack->inScint && priTrack->copyNum >= 0)
+		{
+
+			int detNumber = priTrack->copyNum;
+
+			detScatterX.at(detNumber) = priTrack->dkE * vertex.getX();
+			detScatterY.at(detNumber) = priTrack->dkE * vertex.getY();
+			detScatterZ.at(detNumber) = priTrack->dkE * vertex.getZ();
+			if (detScatterE.at(detNumber) > 0)
+			{
+
+				//double AvgX = (vertex.getX() * priTrack->dkE + detScatterE.at(detNumber) * detScatterX.at(detNumber)) / (priTrack->dkE + detScatterE.at(detNumber));
+				//double AvgY = (vertex.getY() * priTrack->dkE + detScatterE.at(detNumber) * detScatterY.at(detNumber)) / (priTrack->dkE + detScatterE.at(detNumber));
+				//double AvgZ = (vertex.getZ() * priTrack->dkE + detScatterE.at(detNumber) * detScatterZ.at(detNumber)) / (priTrack->dkE + detScatterE.at(detNumber));
+
+				//detScatterX.at(detNumber) = AvgX;
+				//detScatterY.at(detNumber) = AvgY;
+				//detScatterZ.at(detNumber) = AvgZ;
+
+				//detScatterE.at(detNumber) += priTrack->dkE;
+				//detScatterX.at(detNumber) = priTrack->dkE * vertex.getX();
+				//detScatterY.at(detNumber) = priTrack->dkE * vertex.getY();
+				//detScatterZ.at(detNumber) = priTrack->dkE * vertex.getZ();
+			}
+
+			else
+			{
+				//detScatterX.at(detNumber) = vertex.getX();
+				//detScatterY.at(detNumber) = vertex.getY();
+				//detScatterZ.at(detNumber) = vertex.getZ();
+				//detScatterE.at(detNumber) += priTrack->dkE;
+			}
+		}
 	}
 
 	primaryTracks.pop_back();

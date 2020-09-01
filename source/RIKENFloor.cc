@@ -36,6 +36,7 @@ void RIKENFloor::SetBasicSizes()
 void RIKENFloor::MakeFloor()
 {
     G4Material *concreteMaterial = materialsManager->GetConcrete();
+    //G4Material *concreteMaterial = materialsManager->GetHDPE();
     G4Box *boxFloor = new G4Box("FloorSolid", floorThickness, floorWidth, floorWidth);
     floorLogVol = new G4LogicalVolume(boxFloor, concreteMaterial, "floorLogVol");
     G4VisAttributes *floorVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.5));
