@@ -38,12 +38,12 @@ void RIKENSupport::Place(G4RotationMatrix *pRot,
 
     frameMaterial = materialsManager->GetAluminum();
 
-    /* std::string file1 = "/ARCHIVE/Ddata/geant4_stl/vandle/riken2018/RIKEN_VANDLE_FULL_Simplified_Part_new.stl";
+     std::string file1 = "/ARCHIVE/Ddata/geant4_stl/vandle/riken2018/RIKEN_VANDLE_FULL_Simplified_Part_new.stl";
    CADMesh * rebMesh = new CADMesh((char*)file1.c_str());
-   rebMesh->SetScale(cm);*/
-    std::string file1 = "/ARCHIVE/Ddata/geant4_stl/IDS/FDSI_Clarionet_VANDLE_moreLow.stl";
+   rebMesh->SetScale(cm);
+   /* std::string file1 = "/ARCHIVE/Ddata/geant4_stl/IDS/FDSI_Clarionet_VANDLE_moreLow.stl";
     CADMesh *rebMesh = new CADMesh((char *)file1.c_str());
-    rebMesh->SetScale(mm);
+    rebMesh->SetScale(mm);*/
     /*
     std::string file2 = "/ARCHIVE/Ddata/geant4_stl/IDS/clarion_hemisphere.stl";
     CADMesh *rebMesh1 = new CADMesh((char *)file2.c_str());
