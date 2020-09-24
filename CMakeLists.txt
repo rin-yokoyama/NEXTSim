@@ -53,6 +53,7 @@ option(BUILD_TOOLS "Build and install tool programs." OFF)
 option(GEANT4_MT "Enable multi-threading support (if available)." OFF)
 option(GEANT4_GDML "Enable support for G4GDMLParser." OFF)
 option(GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
+option(BUILD_CLOVERSIM "Build and install cloverSim programs." OFF)
 
 #------------------------------------------------------------------------------
 
@@ -108,6 +109,9 @@ add_subdirectory(dict)
 #Add the source directories.
 add_subdirectory(source)
 #add_subdirectory(olaSrc)
+if(BUILD_CLOVERSIM)
+    add_subdirectory(cloversim)
+endif()
 
 if(BUILD_TOOLS)
 	option(BUILD_TOOLS_NISTLIST "Build NIST library list program." OFF)
