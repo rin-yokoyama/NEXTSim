@@ -8,6 +8,7 @@
 #define CLOVER_SIM_EVENT_ACTION_HH
 
 #include <TTree.h>
+#include "G4Event.hh"
 #include "G4UserEventAction.hh"
 #include "CloverSimTreeData.hh"
 

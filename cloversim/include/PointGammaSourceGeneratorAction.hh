@@ -14,17 +14,27 @@
 #include "GSource4G4.hpp"
 #include "G4RandomTools.hh"
 
+
 class PointGammaSourceGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-	PointGammaSourceGeneratorAction(const std::string &fname) { Configure(fname); }
+	PointGammaSourceGeneratorAction();
 	~PointGammaSourceGeneratorAction() {}
 
-	int Configure(const std::string &fname);
+	int Configure();
 	void GeneratePrimaries(G4Event *anEvent);
+
+	void SetSourceType(const G4String &fname);
+	void SetSourcePos(const G4ThreeVector &vec);
+	void SetSourceEnergy(const double &energy);
 
 protected:
 	G4ParticleGun* particle_gun_;
 	GSource4G4* gamma_source_ = nullptr;
 	G4bool completed_ = false;
+
+	G4String file_name_;
+	G4ThreeVector pos_;
+	G4double energy_;
+
 };
 #endif

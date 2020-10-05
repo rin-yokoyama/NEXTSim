@@ -12,8 +12,8 @@
 
 
 #include "CloverSingleDetector.hh"
-//#include "CloverSingleHit.hh"
-//#include "CloverSingleSD.hh"
+#include "CloverSingleHit.hh"
+#include "CloverSingleSD.hh"
 #include "CADMesh.hh"
 #include <TText.h>
 #include "G4NistManager.hh"
@@ -24,7 +24,7 @@ using namespace std;
 
 
 CloverSingleDetector::CloverSingleDetector(G4VPhysicalVolume* p_mother, G4Transform3D p_transformation, G4int p_cl_nb, G4int p_cr_nb, G4VisAttributes* pvis_att)
-  :mother(p_mother), cl_nb(p_cl_nb), cr_nb(p_cr_nb), transformation(p_transformation), det_vis_att(pvis_att)
+  :mother(p_mother), cl_nb(p_cl_nb), cr_nb(p_cr_nb), transformation(p_transformation), det_vis_att(pvis_att), is_sd(false)
 {
 	
 }
@@ -52,19 +52,20 @@ G4VPhysicalVolume* CloverSingleDetector::Construct()
     CloverSingle_log = new G4LogicalVolume(CloverSingle_sol, HPGe, Form("/Clover%i_Crystal%i_log",cl_nb ,cr_nb));
     CloverSingle_log -> SetVisAttributes(det_vis_att);
 
-   
     CloverSingle_phys = new G4PVPlacement(transformation, Form("/Clover%iCrystal%i_phys", cl_nb, cr_nb), CloverSingle_log, mother, false, 0);
 
-    //G4SDManager* SDman = G4SDManager::GetSDMpointer();
-    //cloverSingleSD = new CloverSingleSD(Form("/Clover%i_Crystal%i_SD", cl_nb, cr_nb));
-    //SDman->AddNewDetector(cloverSingleSD);
-    //CloverSingle_log->SetSensitiveDetector(cloverSingleSD);
+    // SetSensitiveDetector
+    if (is_sd){
+      G4SDManager* SDman = G4SDManager::GetSDMpointer();
+      auto cloverSingleSD = new CloverSingleSD(Form("/Clover%i_Crystal%i_SD", cl_nb, cr_nb));
+      SDman->AddNewDetector(cloverSingleSD);
+      CloverSingle_log->SetSensitiveDetector(cloverSingleSD);
 
-//    G4cout << "CloverSingle Sensitive Detector Name = " << cloverSingleSD->GetName() << flush << G4endl;
+      G4cout << "CloverSingle Sensitive Detector Name = " << cloverSingleSD->GetName() << flush << G4endl;
+    }
     
     return(CloverSingle_phys);
 }
-
 
 
 

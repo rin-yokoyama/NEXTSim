@@ -126,14 +126,14 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 		obj->placeObject(logV, materials);
 	}
 
-	if (!expName.empty() && expName != "isolde" && expName != "RIKEN" && expName != "ORNL2016" && expName != "Argonne")
+	if (!expName.empty() && expName != "isolde" && expName != "RIKEN" && expName != "RIKENClover" && expName != "ORNL2016" && expName != "Argonne")
 		cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
 			 << "<<<<<<<<<<<<<<<<<<<<<<<<< Unrecognizable expriment name. Please check for appropriate naming schemes. >>>>>>>>>>>>>>>>>>>>>>>>>\n"
 			 << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 
 	//if(expName=="RIKEN") BuildCERNStructures();
 
-	if (expName == "RIKEN")
+	if (expName == "RIKEN" || expName == "RIKENClover")
 
 		BuildRIKENStructures();
 
@@ -184,7 +184,9 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 
 	/**************************/
 	if (expName == "RIKEN")
-		BuildRIKENElements();
+		BuildRIKENElements(false);
+	else if (expName == "RIKENClover")
+		BuildRIKENElements(true);
 
 	return;
 }
@@ -240,7 +242,7 @@ void nDetWorld::BuildRIKENStructures()
 	return;
 }
 
-void nDetWorld::BuildRIKENElements()
+void nDetWorld::BuildRIKENElements(const bool cloverSD)
 {
 
 	vector<CloverQuadDetector *> clquad_array;
@@ -284,18 +286,23 @@ void nDetWorld::BuildRIKENElements()
 
 	//Construction
 
+	std::cout << "Clover Construction clq:" << clquad_array.size() << " clqb:" << clquadbuch_array.size() << " CloverSD: " << cloverSD << std::endl;
 	// 1. Clover KU Leuven
 	for (int clq = 0; clq < clquad_array.size(); clq++)
 	{
+		if (cloverSD)
+			clquad_array.at(clq)->SetSensitiveDetector();
 		clquad_array.at(clq)->Construct();
 	}
 	// 2. Clover Bucharest
 	for (int clq = 0; clq < clquadbuch_array.size(); clq++)
 	{
+		if (cloverSD)
+			clquadbuch_array.at(clq)->SetSensitiveDetector();
 		clquadbuch_array.at(clq)->Construct();
 	}
 
-	cout << "CERN setup - DONE" << endl;
+	cout << "RIKEN setup - DONE" << endl;
 }
 
 void nDetWorld::BuildCERNElements()

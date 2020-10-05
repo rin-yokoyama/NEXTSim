@@ -12,11 +12,12 @@
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 #include "CloverSimTreeData.hh"
+#include "PointGammaSourceGeneratorAction.hh"
 
 class CloverSimRunAction: public G4UserRunAction
 {
 public:
-    CloverSimRunAction(const std::string &fname);
+    CloverSimRunAction(const std::string &fname, PointGammaSourceGeneratorAction* pg_action);
     virtual ~CloverSimRunAction(){}
 
     virtual void BeginOfRunAction(const G4Run* run);
@@ -31,6 +32,7 @@ protected:
     TFile* root_file_;
     TTree* tree_;
     CloverSimTreeData* evt_data_;
+    PointGammaSourceGeneratorAction* pg_action_;
 };
 
 #endif /* end of CLOVER_SIM_RUN_ACTION_HH */

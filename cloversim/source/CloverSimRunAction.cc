@@ -5,8 +5,9 @@
 
 #include "CloverSimRunAction.hh"
 
-CloverSimRunAction::CloverSimRunAction(const std::string &fname)
+CloverSimRunAction::CloverSimRunAction(const std::string &fname, PointGammaSourceGeneratorAction* pg_action)
 {
+    pg_action_ = pg_action;
     root_file_ = new TFile(fname.c_str(),"RECREATE");
     std::cout << "Opened a ROOT file: " << fname << std::endl;
     tree_ = new TTree("CloverSimTree","CloverSimTree");
@@ -15,6 +16,8 @@ CloverSimRunAction::CloverSimRunAction(const std::string &fname)
 
 void CloverSimRunAction::BeginOfRunAction(const G4Run*)
 {
+    if (pg_action_)
+        pg_action_->Configure();
     evt_data_->ClearData();
     tree_->Branch("eventData","CloverSimTreeData",evt_data_);
 }

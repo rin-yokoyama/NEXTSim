@@ -4,27 +4,45 @@
 //@date 2/21/2020
 
 #include "PointGammaSourceGeneratorAction.hh"
+#include "CloverSimParticleSourceMessenger.hh"
 
 using namespace CLHEP;
 
-int PointGammaSourceGeneratorAction::Configure(const std::string &fname) {
+PointGammaSourceGeneratorAction::PointGammaSourceGeneratorAction() : file_name_("__na__"), pos_(0,0,0), energy_(1000*CLHEP::keV) {
+	CloverSimParticleSourceMessenger* messenger = new CloverSimParticleSourceMessenger(this);
+}
+
+void PointGammaSourceGeneratorAction::SetSourceType(const G4String &fname) {
+	file_name_ = fname;
+}
+
+void PointGammaSourceGeneratorAction::SetSourcePos(const G4ThreeVector &vec) {
+	pos_.setX(vec.getX()*CLHEP::mm);
+	pos_.setY(vec.getY()*CLHEP::mm);
+	pos_.setZ(vec.getZ()*CLHEP::mm);
+}
+
+void PointGammaSourceGeneratorAction::SetSourceEnergy(const double &energy) {
+	energy_ = energy*CLHEP::keV;
+}
+
+int PointGammaSourceGeneratorAction::Configure() {
 	/* create a particle gun for gamma */
 	particle_gun_ = new G4ParticleGun(1);
 	G4ParticleTable* particle_table = G4ParticleTable::GetParticleTable();
 	particle_gun_->SetParticleDefinition(particle_table->FindParticle("gamma"));
 
 	/* create a gamma source instance */
-	if (gamma_source_) {
-		delete gamma_source_;
-		gamma_source_ = nullptr;
+	if (file_name_ != "__na__"){
+		if (gamma_source_) {
+			delete gamma_source_;
+			gamma_source_ = nullptr;
+		}
+		gamma_source_ = new GSource4G4(file_name_);
 	}
-	gamma_source_ = new GSource4G4(fname);
 
 	/* set particle position */
-	const G4double pos_x = 0.0 * CLHEP::mm;
-	const G4double pos_y = 0.0 * CLHEP::mm;
-	const G4double pos_z = 0.0 * CLHEP::mm;
-	particle_gun_->SetParticlePosition(G4ThreeVector(pos_z,pos_y,pos_x));
+	particle_gun_->SetParticlePosition(pos_);
 
 	completed_ = false;
 
@@ -35,16 +53,8 @@ int PointGammaSourceGeneratorAction::Configure(const std::string &fname) {
 }
 
 void PointGammaSourceGeneratorAction::GeneratePrimaries( G4Event* anEvent ) {
-	/* set gamma-ray energy*/
-	if (!gamma_source_->IfNext()) {
-		particle_gun_->SetParticleEnergy(0.);
-		if (!completed_) {
-			std::cout << "[PointGammaSourceGeneratorAction]: gamma emission completed." << std::endl;
-			completed_ = true;
-		}
-		return;
-	}
 
+	/* isotropic direction generator */
 	auto moment_dir = []() {
 		/* A=-1, B=1 for 4*pi, B=0 for 2*pi emission */
 		const G4double A = -1.0;
@@ -60,6 +70,23 @@ void PointGammaSourceGeneratorAction::GeneratePrimaries( G4Event* anEvent ) {
 		return aim;
 	};
 
+	/* No source file provided */
+	if (!gamma_source_) {
+		particle_gun_->SetParticleEnergy(energy_);
+		particle_gun_->SetParticleMomentumDirection(moment_dir());
+		particle_gun_->GeneratePrimaryVertex(anEvent);
+		return;
+	}
+
+	/* set gamma-ray energy*/
+	if (!gamma_source_->IfNext()) {
+		particle_gun_->SetParticleEnergy(0.);
+		if (!completed_) {
+			std::cout << "[PointGammaSourceGeneratorAction]: gamma emission completed." << std::endl;
+			completed_ = true;
+		}
+		return;
+	}
 	G4int n_gamma = gamma_source_->EmitGamma();
 	for (int i = 0; i < n_gamma; ++i)
 	{
@@ -70,6 +97,5 @@ void PointGammaSourceGeneratorAction::GeneratePrimaries( G4Event* anEvent ) {
 		particle_gun_->SetParticleEnergy(gamma_source_->GetEGamma(i) * keV);
 		particle_gun_->GeneratePrimaryVertex(anEvent);
 	}
-
 	return;
 }

@@ -29,7 +29,7 @@ CloverQuadDetector::CloverQuadDetector(G4VPhysicalVolume* p_mother,
                                        G4double p_phi, 
                                        G4double p_spin, 
                                        G4int p_cl_nb)
-  :mother(p_mother), rho(p_rho), theta(p_theta), phi(p_phi), spin(p_spin), cl_nb(p_cl_nb)
+  :mother(p_mother), rho(p_rho), theta(p_theta), phi(p_phi), spin(p_spin), cl_nb(p_cl_nb), is_sd(false)
 {
 	G4cout	<<"\nClover Quad (KU Leuven) DETECTOR#######################\n"	<<flush
 		<<"\nRho =\t\t"		<<rho/mm	<< " mm"	<<flush
@@ -137,19 +137,21 @@ G4VPhysicalVolume* CloverQuadDetector::Construct()
     Crystal2	= new CloverSingleDetector(mother, transformation, cl_nb, 2, Crystal2_vis_att);
     Crystal3	= new CloverSingleDetector(mother, transformation, cl_nb, 3, Crystal3_vis_att);
     
+    if (is_sd) {
+      Crystal0->SetSensitiveDetector();
+      Crystal1->SetSensitiveDetector();
+      Crystal2->SetSensitiveDetector();
+      Crystal3->SetSensitiveDetector();
+    }
     
     G4VPhysicalVolume* cl0 = Crystal0->Construct();
     G4VPhysicalVolume* cl1 = Crystal1->Construct();
     G4VPhysicalVolume* cl2 = Crystal2->Construct();
     G4VPhysicalVolume* cl3 = Crystal3->Construct();
 
-
-
     return(mother);
 
 }
-
-
 
 
 

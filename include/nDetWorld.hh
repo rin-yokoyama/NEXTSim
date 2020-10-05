@@ -97,7 +97,7 @@ class nDetWorld{
 	/** Build the RIKEN IDS elements
 	 */
 	
-	void BuildRIKENElements();
+	void BuildRIKENElements(const bool cloverSD = false);
 
 	/** Add a new Geant primitive object to the world
 	  * @param str Space-delimited input string with format specified in nDetWorldPrimitive::decodeArgs()

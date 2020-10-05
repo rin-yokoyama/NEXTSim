@@ -52,6 +52,7 @@ Common NEXTSim install options are shown in the table below
 |BUILD\_TOOLS\_NISTLIST  | OFF     | Build NIST database search executable
 |BUILD\_TOOLS\_CONVERTER | OFF     | Build NEXTSim -> SimpleScan converter tool
 |BUILD\_TOOLS\_CMDSEARCH | OFF     | Build NEXTSim macro command search executable
+|BUILD\_CLOVERSIM        | OFF     | Build cloverSim
 
 Install options may be set using ccmake e.g.
 

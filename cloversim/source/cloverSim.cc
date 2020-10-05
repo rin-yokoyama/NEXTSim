@@ -18,6 +18,7 @@
 // using the modular physics list
 #include "G4VModularPhysicsList.hh"
 #include "QGSP_BERT_HP.hh"
+#include "G4PhysListFactory.hh"
 
 #include "nDetActionInitialization.hh"
 #include "nDetMasterOutputFile.hh"
@@ -32,11 +33,15 @@
 #include "termColors.hh"
 #include "version.hh"
 
+#include "CloverSingleSD.hh"
 #include "CloverSimRunAction.hh"
 #include "CloverSimEventAction.hh"
-#include "PointGammaSourceGeneratorAction.hh"
+//#include "PointGammaSourceGeneratorAction.hh"
+#include "nDetParticleSource.hh"
+#include "CloverSimActionInitialization.hh"
 
 #include "G4OpticalPhysics.hh"
+#include "G4EmStandardPhysics.hh"
 
 #include "Randomize.hh"
 #include "time.h"
@@ -62,7 +67,7 @@ int main(int argc, char** argv){
 	handler.add(optionExt("exp",required_argument,NULL,'e',"<setup>","Specify experimental hall setup to build (default=none)."));
 	handler.add(optionExt("source", required_argument, NULL, 's', "<filename>", "Specify gamma source file."));
 #ifdef USE_MULTITHREAD
-	handler.add(optionExt("mt-thread-limit", required_argument, NULL, 'n', "<threads>", "Set the number of threads to use (uses all threads for n <= 0)."));
+	handler.add(optionExt("mt-thread-limit", required_argument, NULL, 'n', "<threads>", "Multi threading is not supported for cloverSim."));
 	handler.add(optionExt("mt-max-threads", no_argument, NULL, 'T', "", "Print the maximum number of threads."));
 #endif
 
@@ -115,15 +120,16 @@ int main(int argc, char** argv){
 
 #ifdef USE_MULTITHREAD
 	G4int numberOfThreads = 1; // Sequential mode by default.
-	if(handler.getOption(9)->active){ 
-		G4int userInput = strtol(handler.getOption(9)->argument.c_str(), NULL, 10);
-		if(userInput > 0) // Set the number of threads to use.
-			numberOfThreads = std::min(userInput, G4Threading::G4GetNumberOfCores());
-		else // Use all available threads.
-			numberOfThreads = G4Threading::G4GetNumberOfCores();
+	if(handler.getOption(10)->active){ 
+		std::cout << "Multithreading is not supported for cloverSim" << std::endl;
+		//G4int userInput = strtol(handler.getOption(11)->argument.c_str(), NULL, 10);
+		//if(userInput > 0) // Set the number of threads to use.
+		//	numberOfThreads = std::min(userInput, G4Threading::G4GetNumberOfCores());
+		//else // Use all available threads.
+		//	numberOfThreads = G4Threading::G4GetNumberOfCores();
 	}
 	
-	if(handler.getOption(10)->active){ // Print maximum number of threads.
+	if(handler.getOption(11)->active){ // Print maximum number of threads.
 		std::cout << PROGRAM_NAME << ": Max number of threads on this machine is " << G4Threading::G4GetNumberOfCores() << ".\n";
 		return 0;
 	}
@@ -177,13 +183,16 @@ int main(int argc, char** argv){
 		std::cout << PROGRAM_NAME << ": Setting photon yield multiplier to " << yieldMult << std::endl;
 		detector->SetLightYieldMultiplier(yieldMult);
 	}
+
 	runManager->SetUserInitialization(detector);
 
-	G4VModularPhysicsList* physics = new QGSP_BERT_HP();
+	//G4VModularPhysicsList* physics = new QGSP_BERT_HP();
 
-	G4OpticalPhysics *theOpticalPhysics=new G4OpticalPhysics();
-	theOpticalPhysics->SetScintillationByParticleType(true);
-	physics->ReplacePhysics(theOpticalPhysics);
+	//G4OpticalPhysics *theOpticalPhysics=new G4OpticalPhysics();
+	//theOpticalPhysics->SetScintillationByParticleType(true);
+	//physics->ReplacePhysics(theOpticalPhysics);
+	G4PhysListFactory *physListFactory = new G4PhysListFactory();
+	auto physics = physListFactory->GetReferencePhysList("QGSP_BERT_HP");
 	runManager->SetUserInitialization(physics);
 
 #ifdef G4VIS_USE
@@ -193,17 +202,20 @@ int main(int argc, char** argv){
 #endif
 
 	// 
-	//nDetActionInitialization *runAction = new nDetActionInitialization(verboseMode);
+	nDetActionInitialization *nDetRunAction = new nDetActionInitialization(verboseMode);
 	
 	// Set the action initialization.
 	//runManager->SetUserInitialization(runAction);
 
-	CloverSimRunAction* runAction = new CloverSimRunAction(outputFilename);
-	CloverSimEventAction* evtAction = new CloverSimEventAction(runAction->GetEventData(),runAction->GetTree());
-	PointGammaSourceGeneratorAction* genAction = new PointGammaSourceGeneratorAction(gamma_source_file);
-	runManager->SetUserAction(runAction);
-	runManager->SetUserAction(evtAction);
-	runManager->SetUserAction(genAction);
+	//CloverSimRunAction* runAction = new CloverSimRunAction(outputFilename);
+	//CloverSimEventAction* evtAction = new CloverSimEventAction(runAction->GetEventData(),runAction->GetTree());
+	//PointGammaSourceGeneratorAction* genAction = new PointGammaSourceGeneratorAction(gamma_source_file);
+	//auto genAction = new nDetPrimaryGeneratorAction();
+	//runManager->SetUserAction(runAction);
+	//runManager->SetUserAction(evtAction);
+	//runManager->SetUserAction(genAction);
+	CloverSimActionInitialization* action = new CloverSimActionInitialization(outputFilename);
+	runManager->SetUserInitialization(action);
 
 	// Ensure that the output file is initialized.
 	nDetMasterOutputFile *output = &nDetMasterOutputFile::getInstance();

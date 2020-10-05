@@ -55,6 +55,8 @@ class CloverQuadDetector : public G4VUserDetectorConstruction
 
       G4VPhysicalVolume* Construct();
 
+      void SetSensitiveDetector(const bool set_sd = true) {is_sd = set_sd;}
+
     private:
       // Crystals defined by the CloverSingleDetector class
       //
@@ -109,6 +111,9 @@ class CloverQuadDetector : public G4VUserDetectorConstruction
       // Numbering of the clovers 
       //
       G4int cl_nb;
+
+      // A flag to set this as a sensitive detector
+      G4bool is_sd;
 };
 
 #endif

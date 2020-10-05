@@ -50,6 +50,8 @@ class CloverSingleDetector : public G4VUserDetectorConstruction
 
       G4VPhysicalVolume* Construct();
 
+      void SetSensitiveDetector(bool sensitive = true) {is_sd = sensitive;}
+
       
     private:
       G4String name;
@@ -80,6 +82,8 @@ class CloverSingleDetector : public G4VUserDetectorConstruction
       G4VisAttributes* det_vis_att;
       G4int cl_nb;
       G4int cr_nb;
+
+      G4bool is_sd;
 };
 
 #endif

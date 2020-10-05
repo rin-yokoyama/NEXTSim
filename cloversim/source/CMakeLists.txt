@@ -19,6 +19,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CloverSimDataDict_rdict.pcm DESTINATIO
 # Build and install shared library
 add_library(CloverSimLib SHARED
 #add_library(CloverSimLib STATIC
+    CloverSimParticleSourceMessenger.cc
+    CloverSimActionInitialization.cc
     CloverSimDataDict.cxx
     CloverSimEventAction.cc
     CloverSimRunAction.cc
