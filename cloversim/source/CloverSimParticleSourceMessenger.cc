@@ -16,7 +16,7 @@ void CloverSimParticleSourceMessenger::addAllCommands(){
 	addGuidance("Set a pre-defined isotropic particle source");
 	addGuidance("file name");
 	
-	addCommand(new G4UIcmdWithADouble("/cloverSim/source/pos", this)); // source position (mm)
+	addCommand(new G4UIcmdWith3Vector("/cloverSim/source/pos", this)); // source position (mm)
 	addGuidance("Set the source position x, y, z (in mm)");
 
 	addCommand(new G4UIcmdWithADouble("/cloverSim/source/energy", this));
