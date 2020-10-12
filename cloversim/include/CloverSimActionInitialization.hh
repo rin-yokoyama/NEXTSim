@@ -15,8 +15,11 @@ public:
 
     virtual void Build() const;
     virtual void BuildForMaster() const;
+
+    void SetGeneratorActionName(const G4String &name) {generator_action_name_ = name;}
 private:
     std::string output_filename_;
+    std::string generator_action_name_;
 };
 
 #endif /* CLOVER_SIM_ACTION_INITIALIZATION_HH */

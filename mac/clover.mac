@@ -81,15 +81,20 @@
 # SOURCE SETUP #  THIS IS FOR CLOVER SIM
 ################
 
+/cloverSim/source/generator implant
+/cloverSim/source/treeName mergedCorrectedBeta
+/cloverSim/source/branchName mergedBeta
+/cloverSim/source/addFile /SCRATCH/DScratch4/RIBF136/ry/corrected_rootfiles/0.0/mergedCorrectedBeta_Ni78_r0.2.root
+/cloverSim/source/addFile /SCRATCH/DScratch4/RIBF136/ry/corrected_rootfiles/0.1/mergedCorrectedBeta_Ni78_r0.2.root
 /cloverSim/source/energy 500
 #/cloverSim/source/type 152Eu.txt
-/cloverSim/source/pos 0 0 0
+#/cloverSim/source/pos 1000 1000 1000
 
 # Set isotropic source (0=off, 1=psuedo, 2=realistic)
-/nDet/source/iso 1
+#/nDet/source/iso 1
 
 ###############
 # RUN CONTROL #
 ###############
-/run/beamOn 10000
+/run/beamOn 100
 

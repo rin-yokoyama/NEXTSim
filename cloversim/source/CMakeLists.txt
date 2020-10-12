@@ -27,13 +27,14 @@ add_library(CloverSimLib SHARED
     PointGammaSourceGeneratorAction.cc
     GSource4G4.cpp
     GSStateG4.cpp
+    VANDLE18ImplantedGammaSourceGeneratorAction.cc
 )
-target_link_libraries(CloverSimLib ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+target_link_libraries(CloverSimLib ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TraceAnalyzerLib MergerLib ${YAML_CPP_LIBRARIES})
 install(TARGETS CloverSimLib
     LIBRARY DESTINATION lib
 )
 
 # Build cloverSim executable.
 add_executable(cloverSim cloverSim.cc)
-target_link_libraries(cloverSim CloverSimLib NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${cadmesh_LIBRARIES})
+target_link_libraries(cloverSim CloverSimLib NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${cadmesh_LIBRARIES} TraceAnalyzerLib MergerLib ${YAML_CPP_LIBRARIES})
 install(TARGETS cloverSim DESTINATION bin)

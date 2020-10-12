@@ -18,14 +18,14 @@
 class PointGammaSourceGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
 	PointGammaSourceGeneratorAction();
-	~PointGammaSourceGeneratorAction() {}
+	virtual ~PointGammaSourceGeneratorAction() {}
 
-	int Configure();
-	void GeneratePrimaries(G4Event *anEvent);
+	virtual int Configure();
+	virtual void GeneratePrimaries(G4Event *anEvent);
 
-	void SetSourceType(const G4String &fname);
-	void SetSourcePos(const G4ThreeVector &vec);
-	void SetSourceEnergy(const double &energy);
+	virtual void SetSourceType(const G4String &fname);
+	virtual void SetSourcePos(const G4ThreeVector &vec);
+	virtual void SetSourceEnergy(const double &energy);
 
 protected:
 	G4ParticleGun* particle_gun_;

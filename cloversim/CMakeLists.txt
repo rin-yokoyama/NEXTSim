@@ -1,2 +1,7 @@
 include_directories(include)
+find_package(yaml-cpp)
+set(MERGER_DIR_PATH $ENV{MERGER_SYS} CACHE STRING "path to merger directory")
+include_directories(${MERGER_DIR_PATH}/include)
+link_directories(${MERGER_DIR_PATH}/lib)
+link_directories(${YAML_CPP_CMAKE_DIR}/../../../lib)
 add_subdirectory(source)

@@ -16,8 +16,14 @@ CloverSimRunAction::CloverSimRunAction(const std::string &fname, PointGammaSourc
 
 void CloverSimRunAction::BeginOfRunAction(const G4Run*)
 {
-    if (pg_action_)
+    if (pg_action_) {
         pg_action_->Configure();
+    }
+    else
+    {
+        std::cout << "[CloverSimRunAction]: Null pointer to the PrimaryGeneratorAction" << std::endl;
+    }
+    
     evt_data_->ClearData();
     tree_->Branch("eventData","CloverSimTreeData",evt_data_);
 }

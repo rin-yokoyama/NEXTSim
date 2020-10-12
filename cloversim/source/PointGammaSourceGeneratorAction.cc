@@ -9,7 +9,6 @@
 using namespace CLHEP;
 
 PointGammaSourceGeneratorAction::PointGammaSourceGeneratorAction() : file_name_("__na__"), pos_(0,0,0), energy_(1000*CLHEP::keV) {
-	CloverSimParticleSourceMessenger* messenger = new CloverSimParticleSourceMessenger(this);
 }
 
 void PointGammaSourceGeneratorAction::SetSourceType(const G4String &fname) {
