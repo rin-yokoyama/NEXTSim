@@ -36,6 +36,11 @@ void nDetWorldMessenger::addAllCommands(){
 
 	addCommand(new G4UIcmdWithoutParameter("/nDet/world/BuildIDS", this));
 	addGuidance("Build basic (non-sensitive) elements of ISOLDE Decay Station like support frames, tape box, and floor");
+	addCommand(new G4UIcmdWith3VectorAndUnit("/nDet/world/setSourceHolderPosition", this));
+	addGuidance("Set the position of the gamma source holder along the X, Y, and Z axis");
+
+	addCommand(new G4UIcmdWith3VectorAndUnit("/nDet/world/setSourceCasePosition", this));
+	addGuidance("Set the position of the gamma source holder along the X, Y, and Z axis");
 
 }
 
@@ -69,5 +74,13 @@ void nDetWorldMessenger::SetNewChildValue(G4UIcommand* command, G4String newValu
 	}
 	else if(index==8){
 		fWorld->BuildCERNElements();
+	}
+	else if (index == 9)
+	{
+		fWorld->SetSourceHolderPosition(command->ConvertToDimensioned3Vector(newValue));
+	}
+	else if (index == 10)
+	{
+		fWorld->SetSourceCasePosition(command->ConvertToDimensioned3Vector(newValue));
 	}
 }

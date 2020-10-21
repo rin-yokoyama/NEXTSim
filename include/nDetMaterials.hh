@@ -33,8 +33,9 @@ class nDetMaterials{
     G4Element* fSi; ///< Silicon
     G4Element* fAl; ///< Aluminium
 	G4Element* fY; ///< Yttrium
-	G4Element* fLa; ///< Yttrium
-	G4Element* fBr; ///< Yttrium
+	G4Element* fLa; ///< Lanthanum
+	G4Element* fBr; ///< Bromide
+	G4Element* fN; ///< Nitrogen
 
     G4Material* fAir; ///< Material corresponding to air
     G4Material* fVacuum; ///< Material corresponding to natural vacuum
@@ -51,6 +52,7 @@ class nDetMaterials{
 	G4Material* fLaBr3; ///< Material corresponding to Lanthnum
 	G4Material* fPLA; ///<Material correspondint to PLA
 	G4Material* fHDPE; ///<Material correspondint to HDPE
+	G4Material* fABS; ///<Material correspondint to HDPE
 
 
     // Material table properties

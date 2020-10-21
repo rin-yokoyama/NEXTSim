@@ -33,6 +33,7 @@ nDetMaterials::~nDetMaterials()
 		delete fLaBr3;
 		delete fPLA;
 		delete fHDPE;
+		delete fABS;
 
 		// Material properties tables
 		delete fPerfectMPT;
@@ -75,6 +76,7 @@ void nDetMaterials::initialize()
 	elementList["Y"] = fY;
 	elementList["La"] = fLa;
 	elementList["Br"] = fBr;
+	elementList["N"] = fN;
 	materialList["air"] = fAir;
 	materialList["vacuum"] = fVacuum;
 	materialList["teflon"] = fTeflon;
@@ -82,6 +84,7 @@ void nDetMaterials::initialize()
 	materialList["ej276"] = fEJ276;
 	materialList["grease"] = fGrease;
 	materialList["yso"] = fYSO;
+	materialList["ABS"] = fABS;
 	materialList["PLA"] = fPLA;
 	materialList["LaBr3"] = fLaBr3;
 	materialList["HDPE"] = fHDPE;
@@ -411,6 +414,7 @@ void nDetMaterials::defineMaterials()
 	fY = nist.searchForElement("Y");
 	fLa = nist.searchForElement("La");
 	fBr = nist.searchForElement("Br");
+	fN = nist.searchForElement("N");
 
 	// Air
 	fAir = nist.searchForMaterial("G4_AIR");
@@ -427,6 +431,16 @@ void nDetMaterials::defineMaterials()
 	fYSO->AddElement(fO, nAtoms = 5);
 
 	materialList["yso"] = fYSO;
+
+	// ABS
+	G4int ncomp_ABS = 3;
+	fABS = new G4Material("ABS", 1.05 * g / cm3, ncomp_ABS);
+
+	fABS->AddElement(fC, nAtoms = 13);
+	fABS->AddElement(fH, nAtoms = 17);
+	fABS->AddElement(fN, nAtoms = 5);
+
+	materialList["ABS"] = fABS;
 
 	// Lanthanum Bromide
 	G4int ncomp_labr3 = 2;

@@ -17,9 +17,11 @@ void PointGammaSourceGeneratorAction::SetSourceType(const G4String &fname) {
 }
 
 void PointGammaSourceGeneratorAction::SetSourcePos(const G4ThreeVector &vec) {
+
 	pos_.setX(vec.getX()*CLHEP::mm);
 	pos_.setY(vec.getY()*CLHEP::mm);
 	pos_.setZ(vec.getZ()*CLHEP::mm);
+	
 }
 
 void PointGammaSourceGeneratorAction::SetSourceEnergy(const double &energy) {
