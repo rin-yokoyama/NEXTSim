@@ -6,6 +6,7 @@
 #include "globals.hh"
 
 #include "G4ThreeVector.hh"
+#include "G4VPhysicalVolume.hh"
 
 class nDetWorldObject;
 class nDetWorldPrimitive;
@@ -15,6 +16,7 @@ class gdmlObject;
 
 class G4Box;
 class G4LogicalVolume;
+
 class G4PVPlacement;
 
 /** @class nDetWorld
@@ -23,45 +25,62 @@ class G4PVPlacement;
   * @date August 14, 2019
   */
 
-class nDetWorld{
-  public:
+class nDetWorld
+{
+public:
 	/** Default constructor
 	  */
 	nDetWorld();
-	
+
 	/** Destructor
 	  */
-	~nDetWorld(){ }
+	~nDetWorld() {}
 
 	/** Get a pointer to the geometry of the experimental setup area
 	  */
-	G4Box *getGeometry(){ return solidV; }
-	
+	G4Box *getGeometry() { return solidV; }
+
 	/** Get a pointer to the logical volume of the experimental setup area
 	  */
-	G4LogicalVolume *getLogicalVolume(){ return logV; }
+	G4LogicalVolume *getLogicalVolume() { return logV; }
 
 	/** Get a pointer to the physical volume of the experimental setup area
-	  */	
-	G4PVPlacement *getPhysicalVolume(){ return physV; }
+	  */
+	G4PVPlacement *getPhysicalVolume() { return physV; }
 
 	/** Get a pointer to the messenger used for this class
 	  */
-	nDetWorldMessenger *getMessenger(){ return messenger; }
+	nDetWorldMessenger *getMessenger() { return messenger; }
+
+	void SetSourceHolderPosition(const G4ThreeVector &pos)
+	{
+
+		SourceHolderPosition = pos;
+
+		frame5_phys->SetTranslation(SourceHolderPosition);
+	}
+
+	void SetSourceCasePosition(const G4ThreeVector &pos1)
+	{
+		SourceCasePosition = pos1;
+
+		source_holder_phys->SetTranslation(SourceCasePosition);
+	}
+	/**Setting the position of the source holder**/
 
 	/** Set the bounding box size of the experimental hall along the X, Y, and Z axes (all in mm)
 	  * @note The new world size will take effect the next time nDetConstruction::ConstructDetector() is called
 	  */
-	void setWorldSize(const G4ThreeVector &size){ hallSize = size; }
+	void setWorldSize(const G4ThreeVector &size) { hallSize = size; }
 
 	/** Set the name of the material to use to fill the experimental hall
 	  * @note Defaults to "air" which corresponds to nDetMaterials::fAir
 	  */
-	void setWorldMaterial(const G4String &material){ fillMaterial = material; }
+	void setWorldMaterial(const G4String &material) { fillMaterial = material; }
 
 	/** Set the size of the pit in the floor of the experimental hall
 	  */
-	void setWorldFloorPitSize(const G4ThreeVector &size){ floorPitSize = size; }
+	void setWorldFloorPitSize(const G4ThreeVector &size) { floorPitSize = size; }
 
 	/** Setup a floor for the bottom of the experimental hall using parameters from a space-delimited input string
 	  * @note String syntax: <surfaceY> <thickness> [material=G4_CONCRETE]
@@ -80,13 +99,13 @@ class nDetWorld{
 
 	/** Set Name for experimental setup to be constructed
 	 */
-	void SetExp(std::string const expName_){expName = expName_;}
+	void SetExp(std::string const expName_) { expName = expName_; }
 
 	/** Build the CERN hall structures
 	 */
 	void BuildCERNStructures();
 
-    /** Build the RIKEN hall structures
+	/** Build the RIKEN hall structures
 	 */
 	void BuildRIKENStructures();
 
@@ -96,7 +115,7 @@ class nDetWorld{
 
 	/** Build the RIKEN IDS elements
 	 */
-	
+
 	void BuildRIKENElements(const bool cloverSD = false);
 
 	/** Add a new Geant primitive object to the world
@@ -128,23 +147,27 @@ class nDetWorld{
 	  * @return A pointer to the gdmlObject containing the model
 	  */
 	gdmlObject *loadGDML(const G4String &input);
-	
-  private:
-	G4Box *solidV; ///< Geometry of the experimental setup area
-	G4LogicalVolume* logV; ///< Logical volume of the experimental setup area
-	G4PVPlacement* physV; ///< Physical volume of the experimental setup area
 
-	G4String fillMaterial; ///< The name of the material which fills the experimental hall
+private:
+	G4Box *solidV;		   ///< Geometry of the experimental setup area
+	G4LogicalVolume *logV; ///< Logical volume of the experimental setup area
+	G4PVPlacement *physV;  ///< Physical volume of the experimental setup area
+
+	G4String fillMaterial;	///< The name of the material which fills the experimental hall
 	G4String floorMaterial; ///< The name of the material which comprises the floor of the experimental hall
 
 	G4double floorThickness; ///< Thickness of the floor of the experimental hall (in mm)
-	G4double floorSurfaceY; ///< Vertical distance to the surface of the floor of the experimental hall (with respect to the origin, in mm)
+	G4double floorSurfaceY;	 ///< Vertical distance to the surface of the floor of the experimental hall (with respect to the origin, in mm)
 
 	G4ThreeVector floorPitSize; ///< The size of the floor pit along the X, Y, and Z axes (all in mm)
-	G4ThreeVector hallSize; ///< Size of the experimental hall along the X, Y, and Z axes (all in mm)
+	G4ThreeVector hallSize;		///< Size of the experimental hall along the X, Y, and Z axes (all in mm)
+	G4ThreeVector SourceHolderPosition;
+	G4ThreeVector SourceCasePosition;
+	G4VPhysicalVolume *source_holder_phys;
+	G4VPhysicalVolume *frame5_phys;
 
-	std::vector<nDetWorldObject*> objects; ///< Vector of objects to add to the experimental setup area
-	
+	std::vector<nDetWorldObject *> objects; ///< Vector of objects to add to the experimental setup area
+
 	std::string expName;
 
 	nDetWorldMessenger *messenger; ///< Pointer to the messenger used for this class

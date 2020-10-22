@@ -15,7 +15,8 @@
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4SystemOfUnits.hh"
 
-void nDetMaterialsMessenger::addAllCommands(){
+void nDetMaterialsMessenger::addAllCommands()
+{
 	addDirectory("/nDet/materials/", "Material controls");
 
 	addCommand(new G4UIcmdWithoutParameter("/nDet/materials/listAll", this));
@@ -35,37 +36,49 @@ void nDetMaterialsMessenger::addAllCommands(){
 
 	addCommand(new G4UIcmdWithAString("/nDet/materials/readMaterial", this));
 	addGuidance("Construct a new material by reading an input file");
-	
+
 	addCommand(new G4UIcmdWithAString("/nDet/materials/printMaterial", this));
 	addGuidance("Print parameters for a defined NEXTSim construction material");
+
+	
 }
 
-void nDetMaterialsMessenger::SetNewChildValue(G4UIcommand* command, G4String newValue){
+void nDetMaterialsMessenger::SetNewChildValue(G4UIcommand *command, G4String newValue)
+{
 	size_t index;
-	if(!findCommand(command, newValue, index)) return;
+	if (!findCommand(command, newValue, index))
+		return;
 
-	if(index == 0){
+	if (index == 0)
+	{
 		fMaterials->listMaterials();
 		fMaterials->listVisAttributes();
 		fMaterials->listOptSurfaces();
 	}
-	else if(index == 1){
+	else if (index == 1)
+	{
 		fMaterials->listMaterials();
 	}
-	else if(index == 2){
+	else if (index == 2)
+	{
 		fMaterials->listVisAttributes();
 	}
-	else if(index == 3){
+	else if (index == 3)
+	{
 		fMaterials->listOptSurfaces();
 	}
-	else if(index == 4){
-		if(fMaterials->searchForMaterial(newValue))
+	else if (index == 4)
+	{
+		if (fMaterials->searchForMaterial(newValue))
 			std::cout << "Found material named \"" << newValue << "\" in material list\n";
 	}
-	else if(index == 5){
+	else if (index == 5)
+	{
 		fMaterials->buildNewMaterial(newValue);
 	}
-	else if(index == 6){
+	else if (index == 6)
+	{
 		fMaterials->printMaterial(newValue);
 	}
+	
 }
