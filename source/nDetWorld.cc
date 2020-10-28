@@ -150,7 +150,7 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 	G4VSolid *BRIKEN_HOLE = new G4Box("BRIKEN_HOLE", 70 * mm, 70 * mm, 375 * mm);
 	G4VSolid *BRIKEN = new G4SubtractionSolid("BRIKEN_BLOCK-BRIKEN_HOLE", BRIKEN_BLOCK, BRIKEN_HOLE, 0, G4ThreeVector(0, 0, 0));
 	G4LogicalVolume *BRIKEN_Log = new G4LogicalVolume(BRIKEN, materials->getMaterial("HDPE"), "BRIKEN", 0, 0, 0);
-	G4VPhysicalVolume *BRIKEN_phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 1.25 * m), BRIKEN_Log, "BRIKEN_phys", logV, false, 0);
+//	G4VPhysicalVolume *BRIKEN_phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 1.25 * m), BRIKEN_Log, "BRIKEN_phys", logV, false, 0);
 
 	// Placing HDPE floor in the experiemt.
 
@@ -265,7 +265,7 @@ void nDetWorld::BuildRIKENStructures()
 	RIKENSupport *rikenSupport = new RIKENSupport();
 	G4RotationMatrix *rotSupport = new G4RotationMatrix();
 	G4ThreeVector supportPos(0.0, 4 * cm, 7 * cm);
-	rikenSupport->Place(rotSupport, supportPos, "rikenSupport", logV);
+	//rikenSupport->Place(rotSupport, supportPos, "rikenSupport", logV);
 	/*
 
 	// Using classes for RIKEN to build RIKEN elements.
