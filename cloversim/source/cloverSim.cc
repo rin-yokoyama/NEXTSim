@@ -39,6 +39,7 @@
 //#include "PointGammaSourceGeneratorAction.hh"
 #include "nDetParticleSource.hh"
 #include "CloverSimActionInitialization.hh"
+#include "CloverSimDetectorConstruction.hh"
 
 #include "G4OpticalPhysics.hh"
 #include "G4EmStandardPhysics.hh"
@@ -174,8 +175,12 @@ int main(int argc, char** argv){
 	// Set mandatory initialization classes
 	// Initialize the detector
 	nDetConstruction* detector = &nDetConstruction::getInstance(); // The detector builder is a singleton class.
+	auto clover_detector_construction = new CloverSimDetectorConstruction();
+	nDetWorld* exp_hall;
 	if(!expName.empty()){
-		detector->BuildExp(expName);
+		exp_hall = detector->BuildExp(expName);
+		//detector->Construct();
+		//clover_detector_construction->ConstructInAVolume(exp_hall->getLogicalVolume(),exp_hall->getPhysicalVolume());
 	}else std::cout << "<<<<<<<<<<<<<<<<<<<<   No experiment specified for \"-e\" argument. No setup will be constructed. >>>>>>>>>>>>>>>>>>>>\n";
 
 
@@ -275,6 +280,7 @@ int main(int argc, char** argv){
 	// We MUST set detector initialization to NULL because the run manager does not
 	// own the detector and will cause a seg-fault when its destructor is called.
 	runManager->SetUserInitialization((detector = NULL)); 
+	runManager->SetUserInitialization((clover_detector_construction = nullptr)); 
 	delete runManager;
 	
 	return 0;

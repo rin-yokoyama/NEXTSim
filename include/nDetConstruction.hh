@@ -14,7 +14,8 @@
 
 // Class declarations
 class nDetConstructionMessenger;
-class nDetWorld;
+#include "nDetWorld.hh"
+//class nDetWorld;
 
 class G4Material;
 class G4VPhysicalVolume;
@@ -167,7 +168,7 @@ class nDetConstruction : public G4VUserDetectorConstruction{
 	
 	/** Set the experimental setup name for construction
 	 */
-	void BuildExp(std::string expName_);
+	nDetWorld* BuildExp(std::string expName_);
 
   private:
 	nDetConstructionMessenger *fDetectorMessenger; ///< Geant messenger to use for this class

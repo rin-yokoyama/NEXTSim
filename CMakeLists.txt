@@ -55,6 +55,9 @@ option(GEANT4_GDML "Enable support for G4GDMLParser." OFF)
 option(GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 option(BUILD_CLOVERSIM "Build and install cloverSim programs." OFF)
 
+if(BUILD_CLOVERSIM)
+    add_definitions(-DBUILD_CLOVERSIM)
+endif()
 #------------------------------------------------------------------------------
 
 #Set the name of the dictionary
@@ -102,6 +105,19 @@ include(${Geant4_USE_FILE})
 include_directories(include)
 include_directories(dict/include)
 include_directories(olaInclude)
+
+if(BUILD_CLOVERSIM)
+    include_directories(cloversim/include)
+    include_directories(cloversim/LENSLong/include)
+
+    find_package(yaml-cpp)
+    set(MERGER_DIR_PATH $ENV{MERGER_SYS} CACHE STRING "path to merger directory")
+    include_directories(${MERGER_DIR_PATH}/include)
+    link_directories(${MERGER_DIR_PATH}/lib)
+    link_directories(${YAML_CPP_CMAKE_DIR}/../../../lib)
+
+    link_directories(${PWD}/cloversim/LENSLong/source)
+endif()
 
 #Add the root dictionary directory.
 add_subdirectory(dict)

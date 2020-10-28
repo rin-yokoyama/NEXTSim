@@ -19,6 +19,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CloverSimDataDict_rdict.pcm DESTINATIO
 # Build and install shared library
 add_library(CloverSimLib SHARED
 #add_library(CloverSimLib STATIC
+    CloverSimDetector.cpp
+    CloverSimDetectorConstruction.cc
     CloverSimParticleSourceMessenger.cc
     CloverSimActionInitialization.cc
     CloverSimDataDict.cxx
@@ -29,12 +31,12 @@ add_library(CloverSimLib SHARED
     GSStateG4.cpp
     VANDLE18ImplantedGammaSourceGeneratorAction.cc
 )
-target_link_libraries(CloverSimLib ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TraceAnalyzerLib MergerLib ${YAML_CPP_LIBRARIES})
+target_link_libraries(CloverSimLib LENSLongLib NextSimDetector ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} TraceAnalyzerLib MergerLib ${YAML_CPP_LIBRARIES})
 install(TARGETS CloverSimLib
     LIBRARY DESTINATION lib
 )
 
 # Build cloverSim executable.
 add_executable(cloverSim cloverSim.cc)
-target_link_libraries(cloverSim CloverSimLib NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${cadmesh_LIBRARIES} TraceAnalyzerLib MergerLib ${YAML_CPP_LIBRARIES})
+target_link_libraries(cloverSim CloverSimLib NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore LENSLongLib ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${cadmesh_LIBRARIES} TraceAnalyzerLib MergerLib ${YAML_CPP_LIBRARIES})
 install(TARGETS cloverSim DESTINATION bin)

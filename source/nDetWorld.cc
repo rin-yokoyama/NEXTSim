@@ -42,6 +42,10 @@
 #include "CERNSupport.hh"
 #include "RIKENSupport.hh"
 
+#ifdef BUILD_CLOVERSIM
+#include "CloverSimDetectorConstruction.hh"
+#endif
+
 #define DEFAULT_FLOOR_MATERIAL "G4_CONCRETE"
 
 nDetWorld::nDetWorld() : solidV(NULL), logV(NULL), physV(NULL), fillMaterial("air"), floorMaterial(), floorThickness(0), floorSurfaceY(0)
@@ -219,8 +223,13 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 	/**************************/
 	if (expName == "RIKEN")
 		BuildRIKENElements(false);
-	else if (expName == "RIKENClover")
-		BuildRIKENElements(true);
+	else if (expName == "RIKENClover") {
+		//BuildRIKENElements(true);
+		#ifdef BUILD_CLOVERSIM
+		auto clover_sim_dc = new CloverSimDetectorConstruction();
+		clover_sim_dc->ConstructInAVolume(logV,physV);
+		#endif
+	}
 
 	return;
 }

@@ -267,8 +267,9 @@ void nDetConstruction::AddDetectorArray(const G4String &input){
 	}
 }
 
-void nDetConstruction::BuildExp(std::string expName_){
+nDetWorld* nDetConstruction::BuildExp(std::string expName_){
 	expHall->SetExp(expName_);
+	return expHall;
 }
 
 void nDetConstruction::SetLightYieldMultiplier(const G4double &yield){ 

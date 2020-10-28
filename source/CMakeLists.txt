@@ -73,5 +73,9 @@ add_custom_command(OUTPUT ${VERSION_HEADER} COMMAND cp ${INTERNAL_VERSION_HEADER
 #Build simpleScan executable.
 add_executable(nextSim nextSim.cc)
 #target_link_libraries(nextSim NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
-target_link_libraries(nextSim NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${cadmesh_LIBRARIES})
+if(BUILD_CLOVERSIM)
+    target_link_libraries(nextSim NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore CloverSimLib ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${cadmesh_LIBRARIES})
+else()
+    target_link_libraries(nextSim NextSimOutput NextSimDetector NextSimGenerator NextSimPeripheral NextSimCore ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${cadmesh_LIBRARIES})
+endif()
 install(TARGETS nextSim DESTINATION bin)
