@@ -57,18 +57,6 @@ void CloverSimDetector::ConstructDetector(LENSLongDetectorConstruction *mainDete
 		translation_ornl_clover.rotateZ(45 * deg);
 		translation_ornl_clover.rotateX(0 * deg);
 
-		/*G4RotationMatrix rotation_ornl_clover2 = G4RotationMatrix();
-
-		rotation_ornl_clover2.rotateY(-270 * deg);
-		rotation_ornl_clover2.rotateZ(-225 * deg);
-		rotation_ornl_clover2.rotateX(0 * deg);
-
-		G4ThreeVector translation_ornl_clover2(0, 0., 210 * CLHEP::mm);
-
-		translation_ornl_clover2.rotateY(-90 * deg);
-		translation_ornl_clover2.rotateZ(-225 * deg);
-		translation_ornl_clover2.rotateX(-180 * deg);*/
-
 		G4RotationMatrix rotation_ornl_clover2 = G4RotationMatrix();
 
 		rotation_ornl_clover2.rotateY(-90 * deg);
@@ -86,29 +74,13 @@ void CloverSimDetector::ConstructDetector(LENSLongDetectorConstruction *mainDete
 		G4Transform3D transformation_ornl_clover(rotation_ornl_clover, translation_ornl_clover);
 		G4Transform3D transformation_ornl_clover2(rotation_ornl_clover2, translation_ornl_clover2);
 
-		G4RotationMatrix *rot1 = new G4RotationMatrix();
-		rot1->rotateX(90. * CLHEP::deg);
-		//rot1->rotateY(90.0 * CLHEP::deg);
-		rot1->rotateZ(45.0 * CLHEP::deg);
-		/* rotation of the second clover */
-		G4RotationMatrix *rot2 = new G4RotationMatrix();
-		rot2->rotateX(180. * CLHEP::deg);
-
-		/* set placement (positive x) */
-		const G4double dist = 3.5 * CLHEP::cm;
-		/* placement of the first clover */
-		G4ThreeVector placement1(2.25 * CLHEP::cm, 0.0 * CLHEP::cm, -(dist + 0.5 * (297.0) * CLHEP::mm));
-		/* placement of the second clover */
-		G4ThreeVector placement2(2.25 * CLHEP::cm, 0.0 * CLHEP::cm, dist + 0.5 * (297.0) * CLHEP::mm);
-
-		/* adjust distance between clovers */
+		/* delete pre-defined clovers */
 		for (int i = 0; i < m_Gas_LogicalVolumes[0]->GetNoDaughters(); ++i)
 		{
 			auto pvp = m_Gas_LogicalVolumes[0]->GetDaughter(i);
 			if (pvp->GetName() == "SingleModule_Volume")
-
-				/*pvp->SetRotation(rot1);
-			pvp->SetTranslation(placement1);*/
+				delete pvp;
+			else if (pvp->GetName() == "YSO_Volume")
 				delete pvp;
 		}
 		/* find a G4LogicalVolume whose name is "SingleModule_Volume" (the first clover) */
@@ -121,7 +93,6 @@ void CloverSimDetector::ConstructDetector(LENSLongDetectorConstruction *mainDete
 		{
 			new G4PVPlacement(transformation_ornl_clover, m_ModuleTotal_LogicalVolumes[1], "SingleModule_Volume2", m_Gas_LogicalVolumes[0], 0, 0);
 			new G4PVPlacement(transformation_ornl_clover2, m_ModuleTotal_LogicalVolumes[1], "SingleModule_Volume2", m_Gas_LogicalVolumes[0], 0, 1);
-			//new G4PVPlacement(rot2, placement2, m_ModuleTotal_LogicalVolumes[1], "SingleModule_Volume2", m_Gas_LogicalVolumes[0], 0, 1);
 		}
 		std::cout << "n_Volumes: " << m_Gas_LogicalVolumes[0]->GetNoDaughters() << std::endl;
 	}

@@ -40,7 +40,7 @@ void CloverSimEventAction::EndOfEventAction(const G4Event* evt)
                 tree_data_->clover_hits_.emplace_back(clover_hit_);
             }
             /* for ORNL clovers */
-            else if (hitCollections->GetHC(i)->GetName() == "LiquidScintillator/Gamma") {
+            else if (hitCollections->GetHC(i)->GetName() == "Gamma") {
                 auto hc = (LENSLongLiquidScintillatorGammaHitsCollection*)hitCollections->GetHC(i);
                 auto nhits = hc->entries();
                 clover_hit_ = CLOVER_HIT_DEFAULT_STRUCT;
@@ -56,7 +56,7 @@ void CloverSimEventAction::EndOfEventAction(const G4Event* evt)
                 tree_data_->clover_hits_.emplace_back(clover_hit_);
             }
         }
-        //std::cout << std::endl;
+        std::cout << std::endl;
     }
 
     tree_->Fill();

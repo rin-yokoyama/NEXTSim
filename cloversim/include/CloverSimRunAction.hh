@@ -18,7 +18,7 @@ class CloverSimRunAction: public G4UserRunAction
 {
 public:
     CloverSimRunAction(const std::string &fname, PointGammaSourceGeneratorAction* pg_action);
-    virtual ~CloverSimRunAction(){}
+    virtual ~CloverSimRunAction();
 
     virtual void BeginOfRunAction(const G4Run* run);
     virtual void EndOfRunAction(const G4Run* run);

@@ -40,6 +40,7 @@
 #include "nDetParticleSource.hh"
 #include "CloverSimActionInitialization.hh"
 #include "CloverSimDetectorConstruction.hh"
+#include "G4VUserDetectorConstruction.hh"
 
 #include "G4OpticalPhysics.hh"
 #include "G4EmStandardPhysics.hh"
@@ -279,8 +280,7 @@ int main(int argc, char** argv){
 #endif
 	// We MUST set detector initialization to NULL because the run manager does not
 	// own the detector and will cause a seg-fault when its destructor is called.
-	runManager->SetUserInitialization((detector = NULL)); 
-	runManager->SetUserInitialization((clover_detector_construction = nullptr)); 
+	runManager->SetUserInitialization((G4VUserDetectorConstruction*)nullptr);
 	delete runManager;
 	
 	return 0;

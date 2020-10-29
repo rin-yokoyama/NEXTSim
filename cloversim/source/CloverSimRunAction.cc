@@ -14,6 +14,18 @@ CloverSimRunAction::CloverSimRunAction(const std::string &fname, PointGammaSourc
     evt_data_ = new CloverSimTreeData();
 }
 
+CloverSimRunAction::~CloverSimRunAction() {
+    if(root_file_){
+        delete root_file_;
+        root_file_ = nullptr;
+    }
+    if(evt_data_){
+        delete evt_data_;
+        evt_data_ = nullptr;
+    }
+
+}
+
 void CloverSimRunAction::BeginOfRunAction(const G4Run*)
 {
     if (pg_action_) {

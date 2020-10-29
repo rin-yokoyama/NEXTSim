@@ -30,7 +30,7 @@ const G4ThreeVector VANDLE18ImplantedGammaSourceGeneratorAction::ReadPosition(){
     const double y = data->high_gain_.pos_y_;
     const double z = 0;
 
-	std::cout << " (" <<  x << ", " << y << ", " << z << ")" << std::endl;
+	//std::cout << " (" <<  x << ", " << y << ", " << z << ")" << std::endl;
 
     return G4ThreeVector(x,y,z);
 }

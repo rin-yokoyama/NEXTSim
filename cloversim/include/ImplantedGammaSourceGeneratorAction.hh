@@ -73,10 +73,10 @@ generator_name_("point")
 
 template <class T>
 ImplantedGammaSourceGeneratorAction<T>::~ImplantedGammaSourceGeneratorAction() {
-	//if (input_tree_)
-	//	delete input_tree_;
-	//if (particle_gun_)
-	//	delete particle_gun_;
+	if (input_tree_)
+		delete input_tree_;
+	if (particle_gun_)
+		delete particle_gun_;
 }
 
 template <class T>
