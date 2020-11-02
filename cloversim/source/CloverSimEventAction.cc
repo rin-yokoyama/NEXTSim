@@ -44,7 +44,7 @@ void CloverSimEventAction::EndOfEventAction(const G4Event* evt)
                 auto hc = (LENSLongLiquidScintillatorGammaHitsCollection*)hitCollections->GetHC(i);
                 auto nhits = hc->entries();
                 clover_hit_ = CLOVER_HIT_DEFAULT_STRUCT;
-                clover_hit_.modId = i;
+                clover_hit_.modId = hc->GetModuleId();
                 G4double energy = 0;
                 //std::cout << "CloverSingle n_hits: " << nhits << std::endl;
                 for (int i=0; i<nhits; ++i) {
