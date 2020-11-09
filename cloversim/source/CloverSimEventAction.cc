@@ -6,7 +6,7 @@
 #include "CloverSimEventAction.hh"
 #include "CloverSingleHit.hh"
 #include "LENSLongLiquidScintillatorHit.hh"
-
+#include <set>
 CloverSimEventAction::CloverSimEventAction(CloverSimTreeData* tree_data, TTree* tree)
 {
     tree_data_ = tree_data;
@@ -43,19 +43,26 @@ void CloverSimEventAction::EndOfEventAction(const G4Event* evt)
             else if (hitCollections->GetHC(i)->GetName() == "Gamma") {
                 auto hc = (LENSLongLiquidScintillatorGammaHitsCollection*)hitCollections->GetHC(i);
                 auto nhits = hc->entries();
-                clover_hit_ = CLOVER_HIT_DEFAULT_STRUCT;
-                clover_hit_.modE = 0;
-                //std::cout << "CloverSingle n_hits: " << nhits << std::endl;
+                std::set<int> modIds;
                 for (int i=0; i<nhits; ++i) {
                     auto hit = (LENSLongLiquidScintillatorGammaHit*)hc->GetHit(i);
-                    clover_hit_.modE += hit->GetEnergyDeposited();
-                    clover_hit_.modId = hit->GetModuleID();
-                    //std::cout << " modId: " << clover_hit_.modId << " modE: " << clover_hit_.modE;
+                    modIds.emplace(hit->GetModuleID());
                 }
-                tree_data_->clover_hits_.emplace_back(clover_hit_);
+                for (const auto id : modIds){
+                    clover_hit_ = CLOVER_HIT_DEFAULT_STRUCT;
+                    clover_hit_.modE = 0;
+                    clover_hit_.modId = id;
+                    //std::cout << "CloverSingle n_hits: " << nhits << std::endl;
+                    for (int i=0; i<nhits; ++i) {
+                        auto hit = (LENSLongLiquidScintillatorGammaHit*)hc->GetHit(i);
+                        if (hit->GetModuleID()==id)
+                            clover_hit_.modE += hit->GetEnergyDeposited();
+                    }
+                    tree_data_->clover_hits_.emplace_back(clover_hit_);
+                }
             }
         }
-        std::cout << std::endl;
+        //std::cout << std::endl;
     }
 
     tree_->Fill();
