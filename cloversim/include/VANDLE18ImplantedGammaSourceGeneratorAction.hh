@@ -8,15 +8,13 @@
 #include "OutputTreeData.hpp"
 #include "BigRIPSTreeData.h"
 #include "CorrectedVANDLEData.h"
-#include "CorrectedVANDLEData.h"
 #include "CloverSimParticleSourceMessenger.hh"
 #include <TRandom3.h>
 #include <TROOT.h>
 
 class CloverSimParticleSourceMessenger;
 
-class VANDLE18ImplantedGammaSourceGeneratorAction : public //ImplantedGammaSourceGeneratorAction<OutputTreeData<PspmtData, OutputTreeData<PspmtData, TreeData>>>
-                                                    ImplantedGammaSourceGeneratorAction<std::vector<CorrectedVANDLEData>>
+class VANDLE18ImplantedGammaSourceGeneratorAction : public ImplantedGammaSourceGeneratorAction<std::vector<CorrectedVANDLEData>>
 
 {
 public:

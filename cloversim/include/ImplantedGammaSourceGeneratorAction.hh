@@ -149,7 +149,7 @@ bool ImplantedGammaSourceGeneratorAction<T>::Next() {
 	}
 	auto read_next = [&]()->bool { return tree_reader_->Next();};
 	if (!read_next()) {
-		gROOT->ProcessLine("reader->Restart();");
+		tree_reader_->Restart();
 		if (!read_next()) {
 			std::cout << "[ImplantedGammaSourceGeneratorAction]: failed to read events from tree." << std::endl;
 			return false;
