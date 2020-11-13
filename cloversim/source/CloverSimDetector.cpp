@@ -51,7 +51,7 @@ void CloverSimDetector::ConstructDetector(LENSLongDetectorConstruction *mainDete
 		rotation_ornl_clover.rotateZ(45 * deg);
 		rotation_ornl_clover.rotateX(0 * deg);
 
-		G4ThreeVector translation_ornl_clover(0, 0., -210 * CLHEP::mm);
+		G4ThreeVector translation_ornl_clover(0, 0., -225 * CLHEP::mm);
 
 		translation_ornl_clover.rotateY(90 * deg);
 		translation_ornl_clover.rotateZ(45 * deg);
@@ -63,7 +63,7 @@ void CloverSimDetector::ConstructDetector(LENSLongDetectorConstruction *mainDete
 		rotation_ornl_clover2.rotateZ(315 * deg);
 		rotation_ornl_clover2.rotateX(0 * deg);
 
-		G4ThreeVector translation_ornl_clover2(0, 0., 210 * CLHEP::mm);
+		G4ThreeVector translation_ornl_clover2(0, 0., 225 * CLHEP::mm);
 
 		translation_ornl_clover2.rotateY(-90 * deg);
 		translation_ornl_clover2.rotateZ(135 * deg);

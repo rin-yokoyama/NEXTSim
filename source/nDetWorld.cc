@@ -150,7 +150,7 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 	G4VSolid *BRIKEN_HOLE = new G4Box("BRIKEN_HOLE", 70 * mm, 70 * mm, 375 * mm);
 	G4VSolid *BRIKEN = new G4SubtractionSolid("BRIKEN_BLOCK-BRIKEN_HOLE", BRIKEN_BLOCK, BRIKEN_HOLE, 0, G4ThreeVector(0, 0, 0));
 	G4LogicalVolume *BRIKEN_Log = new G4LogicalVolume(BRIKEN, materials->getMaterial("HDPE"), "BRIKEN", 0, 0, 0);
-//	G4VPhysicalVolume *BRIKEN_phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 1.25 * m), BRIKEN_Log, "BRIKEN_phys", logV, false, 0);
+	//	G4VPhysicalVolume *BRIKEN_phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 1.25 * m), BRIKEN_Log, "BRIKEN_phys", logV, false, 0);
 
 	// Placing HDPE floor in the experiemt.
 
@@ -180,36 +180,36 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 	// Source holder for clover efficiency measurements
 
 	G4RotationMatrix *Maskrot = new G4RotationMatrix();
-	Maskrot->rotateZ(45 * deg);
-	G4VSolid *frame = new G4Box("frame", 35 * mm, 35 * mm, 3 * mm);
+	Maskrot->rotateZ(315 * deg);
+	G4VSolid *frame = new G4Box("frame", 40.5 * mm, 39 * mm, 1.75 * mm);
 
-	G4VSolid *hole1 = new G4Tubs("hole1", 0, 11 * mm, 1.5 * mm, 0, 360 * deg);
-	G4VSolid *hole2 = new G4Tubs("hole2", 0, 11 * mm, 1.5 * mm, 0, 360 * deg);
-	G4VSolid *hole3 = new G4Tubs("hole3", 0, 11 * mm, 1.5 * mm, 0, 360 * deg);
-	G4VSolid *hole4 = new G4Tubs("hole4", 0, 11 * mm, 1.5 * mm, 0, 360 * deg);
-	G4VSolid *hole5 = new G4Tubs("hole5", 0, 11 * mm, 1.5 * mm, 0, 360 * deg);
+	G4VSolid *hole1 = new G4Tubs("hole1", 0, 12.7 * mm, 1.75 * mm, 0, 360 * deg);
+	G4VSolid *hole2 = new G4Tubs("hole2", 0, 12.7 * mm, 1.75 * mm, 0, 360 * deg);
+	G4VSolid *hole3 = new G4Tubs("hole3", 0, 12.7 * mm, 1.75 * mm, 0, 360 * deg);
+	G4VSolid *hole4 = new G4Tubs("hole4", 0, 12.7 * mm, 1.75 * mm, 0, 360 * deg);
+	G4VSolid *hole5 = new G4Tubs("hole5", 0, 12.7 * mm, 1.75 * mm, 0, 360 * deg);
 
-	G4VSolid *frame1 = new G4SubtractionSolid("frame-PSPMT_hol1", frame, hole1, 0, G4ThreeVector(-17.44 * mm, -19.0 * mm, 0));
-	G4VSolid *frame2 = new G4SubtractionSolid("frame-PSPMT_hol2", frame1, hole2, 0, G4ThreeVector(17.44 * mm, 19.0 * mm, 0));
+	G4VSolid *frame1 = new G4SubtractionSolid("frame-PSPMT_hol1", frame, hole1, 0, G4ThreeVector(-20.81 * mm, -21.61 * mm, 0));
+	G4VSolid *frame2 = new G4SubtractionSolid("frame-PSPMT_hol2", frame1, hole2, 0, G4ThreeVector(20.81 * mm, 21.61 * mm, 0));
 	G4VSolid *frame3 = new G4SubtractionSolid("frame-PSPMT_hol2", frame2, hole3, 0, G4ThreeVector(0, 0, 0));
-	G4VSolid *frame4 = new G4SubtractionSolid("frame-PSPMT_hol2", frame3, hole4, 0, G4ThreeVector(-17.44 * mm, 19.0 * mm, 0));
+	G4VSolid *frame4 = new G4SubtractionSolid("frame-PSPMT_hol2", frame3, hole4, 0, G4ThreeVector(-20.81 * mm, 21.61 * mm, 0));
 
-	G4VSolid *frame5 = new G4SubtractionSolid("frame-PSPMT_hol2", frame4, hole5, 0, G4ThreeVector(17.44 * mm, -19.0 * mm, 0));
+	G4VSolid *frame5 = new G4SubtractionSolid("frame-PSPMT_hol2", frame4, hole5, 0, G4ThreeVector(20.81 * mm, -21.61 * mm, 0));
 
 	G4LogicalVolume *frame5_Log = new G4LogicalVolume(frame5, materials->getMaterial("PLA"), "frame5", 0, 0, 0);
 
 	//G4VPhysicalVolume *frame5_phys = new G4PVPlacement(Maskrot, G4ThreeVector(0, 0, -26.9 * mm), frame5_Log, "frame5_phys", logV, false, 0);
 
-	frame5_phys = new G4PVPlacement(Maskrot, SourceCasePosition, frame5_Log, "frame5_phys", logV, false, 0);
+	//frame5_phys = new G4PVPlacement(Maskrot, SourceCasePosition, frame5_Log, "frame5_phys", logV, false, 0);
 
 	/*Source Holder*/
 
-	G4VSolid *source_holder = new G4Box("source_holder", 10 * mm, 5.0 * mm, 1 * mm);
+	G4VSolid *source_holder = new G4Box("source_holder", 5.0 * mm, 10.0 * mm, 1.0 * mm);
 	G4LogicalVolume *source_holder_Log = new G4LogicalVolume(source_holder, materials->getMaterial("ABS"), "source_holder", 0, 0, 0);
-	//G4VPhysicalVolume *source_holder_phys = new G4PVPlacement(0, G4ThreeVector(-23*mm, 0, -27.5 * mm), source_holder_Log, "source_holder_phys", logV, false, 0);
+	//G4VPhysicalVolume *source_holder_phys = new G4PVPlacement(0, G4ThreeVector(-23 * mm, 0, -27.5 * mm), source_holder_Log, "source_holder_phys", logV, false, 0);
 	//G4VPhysicalVolume *source_holder_phys = new G4PVPlacement(0, SourceCasePosition, source_holder_Log, "source_holder_phys", logV, false, 0);
 
-	source_holder_phys = new G4PVPlacement(0, SourceCasePosition, source_holder_Log, "source_holder_phys", logV, false, 0);
+	//source_holder_phys = new G4PVPlacement(0, SourceHolderPosition, source_holder_Log, "source_holder_phys", logV, false, 0);
 
 	//Placing RIKEN frame here for IDS test
 	/**************************/
@@ -223,12 +223,13 @@ void nDetWorld::buildExpHall(nDetMaterials *materials)
 	/**************************/
 	if (expName == "RIKEN")
 		BuildRIKENElements(false);
-	else if (expName == "RIKENClover") {
-		//BuildRIKENElements(true);
-		#ifdef BUILD_CLOVERSIM
+	else if (expName == "RIKENClover")
+	{
+//BuildRIKENElements(true);
+#ifdef BUILD_CLOVERSIM
 		auto clover_sim_dc = new CloverSimDetectorConstruction();
-		clover_sim_dc->ConstructInAVolume(logV,physV);
-		#endif
+		clover_sim_dc->ConstructInAVolume(logV, physV);
+#endif
 	}
 
 	return;
@@ -260,7 +261,7 @@ void nDetWorld::BuildRIKENStructures()
 	floorRot->rotateZ(90 * deg);
 	G4double floorXPos = -126.5 * cm;
 	G4ThreeVector floorPosition = G4ThreeVector(0, -210 * cm, 0); // RIKEN Setup
-	//	rikenFloor->Place(floorRot, floorPosition, "rikenFloor", logV);
+	//rikenFloor->Place(floorRot, floorPosition, "rikenFloor", logV);
 
 	RIKENSupport *rikenSupport = new RIKENSupport();
 	G4RotationMatrix *rotSupport = new G4RotationMatrix();
