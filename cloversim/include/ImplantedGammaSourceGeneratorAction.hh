@@ -26,6 +26,7 @@
 // class T is the type of data filled in the Branch of the input TTree.
 template <class T>
 class ImplantedGammaSourceGeneratorAction : public PointGammaSourceGeneratorAction {
+	
 public:
 	ImplantedGammaSourceGeneratorAction();
 	virtual ~ImplantedGammaSourceGeneratorAction();

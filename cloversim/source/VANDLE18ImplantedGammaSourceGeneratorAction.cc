@@ -32,9 +32,12 @@ const G4ThreeVector VANDLE18ImplantedGammaSourceGeneratorAction::ReadPosition()
     } while (data->empty());
 
     /* Fill position of the source from root file. */
-    const double x = data->at(0).GetTranformedX();
-    const double y = data->at(0).GetTransformedY();
-    const double z = -50 * CLHEP::mm + (rand3.Rndm() - 0.5) * GetYSOThickness() * CLHEP::mm;
-
+    const double x = data->at(0).GetTranformedX() * 10 * CLHEP::mm;
+    const double y = data->at(0).GetTransformedY() * 10 * CLHEP::mm;
+    //const double z = -50 * CLHEP::mm + (rand3.Rndm() - 0.5) * GetYSOThickness() * CLHEP::mm;
+    const double z = -52.5 * CLHEP::mm;
+    std::cout << x << " " << y << " " << z << std::endl;
     return G4ThreeVector(x, y, z);
+
+    //std::cout << data->at(0).GetTranformedX() << " " << data->at(0).GetTranformedY() << " " << z << std::endl;
 }
